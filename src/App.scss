@@ -1,0 +1,125 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Exo:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+*,
+*::after,
+*::before {
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit;
+}
+
+html,
+body,
+#root,
+#transition-group {
+    height: 100%;
+}
+
+html {
+    font-size: 62.5%;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    height: 100%;
+    box-sizing: border-box;
+    font-family: 'Noto Sans JP', sans-serif;
+    color: #d1e8e2;
+    background-color: #d1e8e2;
+    //background-color: white;
+    perspective: 1000;
+    backface-visibility: hidden;
+    overflow: hidden;
+}
+// transition classes/anims
+
+// sliding left to go to right page
+.slide-left-enter {
+    animation: slideIn-left;
+    animation-duration: 1.5s;
+    position: absolute;
+}
+
+.slide-left-exit {
+    animation: slideOut-left;
+    animation-duration: 1.5s;
+    position: absolute;
+}
+
+@keyframes slideOut-left {
+    0% {
+    }
+    25% {
+        opacity: 0.5;
+        transform: translateZ(-500rem);
+    }
+    75% {
+        opacity: 0.5;
+        transform: translateZ(-500rem) translateX(200%);
+    }
+    100% {
+        opacity: 0.5;
+        transform: translateZ(-500rem) translateX(200%);
+    }
+}
+
+@keyframes slideIn-left {
+    0%,
+    25% {
+        opacity: 0.5;
+        transform: translateZ(-500px) translateX(-200%);
+    }
+    75% {
+        opacity: 0.5;
+        transform: translateZ(-500px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateZ(0) translateX(0);
+    }
+}
+// right
+.slide-right-enter {
+    animation: slideIn-right;
+    animation-duration: 1.5s;
+    position: absolute;
+}
+
+.slide-right-exit {
+    animation: slideOut-right;
+    animation-duration: 1.5s;
+    position: absolute;
+}
+
+@keyframes slideOut-right {
+    0% {
+    }
+    25% {
+        opacity: 0.5;
+        transform: translateZ(-500rem);
+    }
+    75% {
+        opacity: 0.5;
+        transform: translateZ(-500rem) translateX(-200%);
+    }
+    100% {
+        opacity: 0.5;
+        transform: translateZ(-500rem) translateX(-200%);
+    }
+}
+
+@keyframes slideIn-right {
+    0%,
+    25% {
+        opacity: 0.5;
+        transform: translateZ(-500px) translateX(200%);
+    }
+    75% {
+        opacity: 0.5;
+        transform: translateZ(-500px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateZ(0) translateX(0);
+    }
+}
