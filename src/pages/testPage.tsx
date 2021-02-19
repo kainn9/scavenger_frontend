@@ -5,7 +5,7 @@ const testPage: React.FC = () => {
     return (
         <>
             <ViewMap
-                googleMapURL={`http://maps.google.com/maps/api/js?key=${process.env.REACT_APP_GOOGK}`}
+                googleMapURL={`https://maps.google.com/maps/api/js?key=${process.env.REACT_APP_GOOGK}`}
                 loadingElement={<div className="loading-element" />}
                 containerElement={<div className="view-map" />}
                 mapElement={<div className="map-element" />}
