@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { withScriptjs, withGoogleMap, GoogleMap, Marker } from 'react-google-maps';
+import Div100vh from 'react-div-100vh';
 import './viewMapStyle.scss';
 
 interface mapProps {
@@ -16,7 +17,7 @@ const ViewMap = withScriptjs(
             navigator.geolocation.getCurrentPosition(({ coords }) =>
                 setCurrentLocation({ lat: coords.latitude, lng: coords.longitude }),
             );
-            setZoom((currentZoom) => (currentZoom === 40 ? 39.9 : 40));
+            setZoom((currentZoom) => (currentZoom === 19 ? 18.9 : 19));
             console.log(Date.now(), zoom);
         };
 
@@ -31,7 +32,7 @@ const ViewMap = withScriptjs(
         };
 
         return (
-            <>
+            <Div100vh>
                 <GoogleMap
                     defaultCenter={{ lat: -34.397, lng: 150.644 }}
                     center={
@@ -53,7 +54,7 @@ const ViewMap = withScriptjs(
                         find
                     </div>
                 </div>
-            </>
+            </Div100vh>
         );
     }),
 );
