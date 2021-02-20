@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { withScriptjs, withGoogleMap, GoogleMap, Marker } from 'react-google-maps';
 import './viewMapStyle.scss';
+import lockIcon from '../../assets/lock-icon.png';
+import targetIcon from '../../assets/target-icon.png';
+import unlockIcon from '../../assets/unlock-icon.png';
 
 interface mapProps {
     mapType?: google.maps.MapTypeId;
@@ -25,7 +28,7 @@ const ViewMap = withScriptjs(
                 clearInterval(isLocked);
                 setIsLocked(null);
             } else {
-                const intervalId = setInterval(getLocation, 1000);
+                const intervalId = setInterval(getLocation, 200);
                 setIsLocked(intervalId);
             }
         };
@@ -47,10 +50,12 @@ const ViewMap = withScriptjs(
                 <div className="map-ui">
                     <div className="map-ui-search"></div>
                     <div className="map-ui-lock" onClick={lockOnLocation}>
-                        lock
+                        {isLocked ? <img src={lockIcon} /> : <img src={unlockIcon} />}
+                        {isLocked ? 'Lock On Current Location' : 'Unlock From Current Location'}
                     </div>
                     <div className="map-ui-find" onClick={getLocation}>
-                        find
+                        <img src={targetIcon} />
+                        Pan To Current Location
                     </div>
                 </div>
             </>

@@ -1,3 +1,23 @@
+@mixin map-ui-buttons {
+    border-radius: 50%;
+    height: 10rem;
+    width: 10rem;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    font-weight: 700;
+    font-size: 1.25rem;
+    img {
+        border-radius: 50%;
+        height: 70%;
+        width: 70%;
+    }
+    &:hover {
+        cursor: pointer;
+    }
+}
+
 .view-map {
     height: calc(100vh - calc(100vh - 100%));
     width: 100%;
@@ -17,9 +37,9 @@
 }
 
 .map-ui {
-    background-color: #bab2b5;
+    background-color: #afd275;
     border-radius: 0.2rem;
-    height: 90px;
+    height: 15rem;
     width: 100%;
     position: absolute;
     bottom: 0;
@@ -28,23 +48,19 @@
     justify-content: space-around;
     padding-left: 1rem;
     padding-right: 1rem;
+    opacity: 0.7;
 
     .map-ui-search {
-        height: 50%;
+        height: 5rem;
         width: 70%;
+        border-radius: 1rem;
         background-color: whitesmoke;
     }
     .map-ui-lock {
-        border: black solid 1px;
-        &:hover {
-            cursor: pointer;
-        }
+        @include map-ui-buttons();
     }
 
     .map-ui-find {
-        border: black solid 1px;
-        &:hover {
-            cursor: pointer;
-        }
+        @include map-ui-buttons();
     }
 }
