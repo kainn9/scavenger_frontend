@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { withScriptjs, withGoogleMap, GoogleMap, Marker } from 'react-google-maps';
-import Div100vh from 'react-div-100vh';
 import './viewMapStyle.scss';
 
 interface mapProps {
@@ -32,7 +31,7 @@ const ViewMap = withScriptjs(
         };
 
         return (
-            <Div100vh>
+            <>
                 <GoogleMap
                     defaultCenter={{ lat: -34.397, lng: 150.644 }}
                     center={
@@ -54,7 +53,7 @@ const ViewMap = withScriptjs(
                         find
                     </div>
                 </div>
-            </Div100vh>
+            </>
         );
     }),
 );
