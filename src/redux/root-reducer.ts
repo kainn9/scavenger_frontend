@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux';
 
-import projectReducer from './project/projectReducer';
+import currentLocationReducer from './current-location/currentLocationReducer';
 
 const rootReducer = combineReducers({
-    project: projectReducer,
+    currentLocation: currentLocationReducer,
 });
 export default rootReducer;

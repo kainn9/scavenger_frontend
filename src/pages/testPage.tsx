@@ -1,10 +1,10 @@
 import React from 'react';
-import ViewMap from '../components/view-map/ViewMap';
+import HomeMap from '../components/view-map/home-map/HomeMap';
 
 const testPage: React.FC = () => {
     return (
         <>
-            <ViewMap
+            <HomeMap
                 googleMapURL={`https://maps.google.com/maps/api/js?key=${process.env.REACT_APP_GOOGK}`}
                 loadingElement={<div className="loading-element" />}
                 containerElement={<div className="view-map" />}
