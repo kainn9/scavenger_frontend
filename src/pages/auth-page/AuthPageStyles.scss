@@ -1,0 +1,64 @@
+// from: https://codepen.io/kootoopas/pen/reyqg
+/* Background data (Original source: https://subtlepatterns.com/grid-me/) */
+$bg-url: url('../../assets/tile-city-bg.png');
+$bg-width: 3000px;
+$bg-height: 3000px;
+$iconForNow: 'paper plane outline';
+/* Animations */
+@keyframes bg-scrolling-reverse {
+    100% {
+        background-position: $bg-width $bg-height;
+    }
+}
+@keyframes bg-scrolling-reverse {
+    100% {
+        background-position: $bg-width $bg-height;
+    }
+}
+@-o-keyframes bg-scrolling-reverse {
+    100% {
+        background-position: $bg-width $bg-height;
+    }
+}
+@keyframes bg-scrolling-reverse {
+    100% {
+        background-position: $bg-width $bg-height;
+    }
+}
+
+/* Main styles */
+.auth-page {
+    height: 100vh;
+    background: $bg-url repeat 0 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    animation: bg-scrolling-reverse 45s infinite;
+    animation-timing-function: linear;
+
+    .auth-page-login-card {
+        display: flex;
+        flex-direction: column;
+        padding: 6rem 5rem 0rem 5rem;
+        font-size: 1.8rem;
+        text-align: center;
+        align-items: center;
+        height: 30rem;
+        width: 30rem;
+        background-color: #222831;
+        opacity: 0.9;
+        border-radius: 50%;
+        box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
+        h1 {
+            padding-bottom: 2rem;
+            color: #ffd369;
+        }
+    }
+
+    &::before {
+        font-size: 8rem;
+        font-weight: 100;
+        font-style: normal;
+    }
+}

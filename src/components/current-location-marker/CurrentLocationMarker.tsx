@@ -1,26 +1,26 @@
-import { Marker } from 'react-google-maps';
-import React, { useEffect, useState } from 'react';
+import { Marker } from '@react-google-maps/api';
+import React, { useEffect } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { CLRootState, Action, currentLocation } from '../../../redux/current-location/currentLocationReducer';
-import { PAN_TO_CL } from '../../../redux/current-location/currentLocationActions';
+import { CLRootState, Action, currentLocation } from '../../redux/current-location/currentLocationReducer';
+import { PLACE_CL_MARKER } from '../../redux/current-location/currentLocationActions';
 
 // getting props.currentLocation from redux
 const msp = ({ currentLocation }: { currentLocation: CLRootState }) => ({
     currentLocation: currentLocation.currentLocation,
 });
-// getting PAN_TO_CL from redux
+// getting PLACE_CL_MARKER from redux
 const mdp = (dispatch: (action: Action) => void) => ({
-    PAN_TO_CL: (project: currentLocation) => dispatch(PAN_TO_CL(project)),
+    PLACE_CL_MARKER: (currentLocation: currentLocation) => dispatch(PLACE_CL_MARKER(currentLocation)),
 });
 
 // getting connector for redux props
 const connector = connect(msp, mdp);
 type reduxProps = ConnectedProps<typeof connector>;
 
-const CurrentLocationMarker: React.FC<reduxProps> = function ({ currentLocation, PAN_TO_CL }) {
+const CurrentLocationMarker: React.FC<reduxProps> = function ({ currentLocation, PLACE_CL_MARKER }) {
     useEffect(() => {
         navigator.geolocation.getCurrentPosition(({ coords }) =>
-            PAN_TO_CL({ lat: coords.latitude, lng: coords.longitude }),
+            PLACE_CL_MARKER({ lat: coords.latitude, lng: coords.longitude }),
         );
     }, []);
     return currentLocation ? <Marker position={{ lat: currentLocation.lat, lng: currentLocation.lng }} /> : null;

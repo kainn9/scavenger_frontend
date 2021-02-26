@@ -1,0 +1,17 @@
+.view-map {
+    height: calc(100vh - calc(100vh - 100%));
+    width: 100%;
+    position: absolute;
+    top: 0;
+    z-index: 1;
+    .loading-element {
+        height: 100%;
+        width: 100%;
+        position: absolute;
+    }
+    .map-element {
+        height: 100%;
+        width: 100%;
+        position: absolute;
+    }
+}

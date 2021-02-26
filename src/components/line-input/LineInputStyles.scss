@@ -1,0 +1,26 @@
+@import '../../mixins.scss';
+
+.line-input-container {
+    @include removeWeirdChromAutofill();
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.5rem;
+    label {
+        padding-top: 1rem;
+        font-size: 2.2rem;
+    }
+
+    .line-input {
+        width: 60%;
+        background: none;
+        border: none;
+        border-bottom: #ffd369 1px solid;
+        color: #ffd369;
+        font-family: 'Inconsolata', monospace, sans-serif;
+        &:focus {
+            outline: none;
+        }
+    }
+}

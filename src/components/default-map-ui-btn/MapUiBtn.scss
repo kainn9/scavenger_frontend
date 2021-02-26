@@ -1,0 +1,5 @@
+@import '../../mixins.scss';
+
+.map-ui-btn {
+    @include mapUiBtn();
+}

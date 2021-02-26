@@ -6,3 +6,5 @@ declare module '*.mp4' {
 declare module '*.pdf';
 
 module 'googlemaps';
+
+declare module 'react-spotify-player';

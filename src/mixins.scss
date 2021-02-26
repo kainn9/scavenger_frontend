@@ -16,3 +16,21 @@
         height: 1rem;
     }
 }
+
+@mixin mapUiBtn {
+    text-align: center;
+    i {
+        font-size: 4rem;
+        margin: 0;
+    }
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+@mixin removeWeirdChromAutofill {
+    input:-webkit-autofill {
+        background-clip: text;
+        -webkit-text-fill-color: #ffd369;
+    }
+}
