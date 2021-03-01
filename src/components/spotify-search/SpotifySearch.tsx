@@ -105,7 +105,7 @@ const SpotifySearch: React.FC<reduxProps> = function ({ activeNode, SET_ACTIVE_S
         );
         else if (searchResults && resultType === 'playlists') return (
             <>
-                <h1 className="tracks-header">Podcast Results</h1>
+                <h1 className="tracks-header">Playlist Results</h1>
                 <div className="spotify-results-tracks">
                     {searchResults.playlists.map((pl: soundMedia) => <SpotifySearchPreview {...pl} key={pl.uri}/>)}
                 </div>
