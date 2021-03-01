@@ -113,6 +113,8 @@
         padding-top: 1.3rem;
         .preview-img {
             height: 62%;
+            width: 90%;
+            object-fit: cover;
             margin-bottom: 1.2rem;
             opacity: 1;
             z-index: 10;
