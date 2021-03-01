@@ -138,7 +138,7 @@ const MapForm: React.FC<reduxProps> = function ({
     }, []);
 
     if (menuMode === 'main') return (
-            <form className="map-form">
+            <form className="map-form" onSubmit={(e) => e.preventDefault()}>
             <div className="mf-error">
                 {error ? <><p>{error}</p> <MapUiBtn iconName="window close" text="" bottomText clickFN={() => SET_ERROR(null)}/></> : null}
             </div>
@@ -192,7 +192,7 @@ const MapForm: React.FC<reduxProps> = function ({
         </form>
     )
     else if (menuMode === "img") return (
-        <form className={`map-form ${activeNode && activeNode.img ? 'map-form-img' : ''}`}>
+        <form className={`map-form ${activeNode && activeNode.img ? 'map-form-img' : ''}`} onSubmit={(e) => e.preventDefault()}>
             {activeNode ? (
                 <>
                     <div className="mf-error">
@@ -254,7 +254,7 @@ const MapForm: React.FC<reduxProps> = function ({
            
         </form>
     ); else if (menuMode === "music") return (
-        <form className={`map-form ${activeNode ? 'map-form-music' : ''}`}>
+        <form className={`map-form ${activeNode ? 'map-form-music' : ''}`} onSubmit={(e) => e.preventDefault()} >
             {activeNode ? (
                 <>
                     <div className="mf-error">

@@ -47,7 +47,7 @@ const UploadBtn: React.FC<reduxProps> = function ({ children, SET_ACTIVE_IMAGE, 
             <input
                 type="file"
                 onChange={async ({ target: { files } }) => {
-                    const validation = files ? await validateFile(files[0], 209715200, 2500, 2500) : null;
+                    const validation = files ? await validateFile(files[0], 20971520000, 2500000, 250000) : null;
                     if (validation && files) SET_ACTIVE_IMAGE(files[0]);
                     else if (validation === null) {
                         SET_ERROR('Error, cannot set empty image');
