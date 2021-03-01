@@ -8,7 +8,7 @@ const LogoutButton: React.FC = () => {
             className="btn btn-danger btn-block"
             onClick={() =>
                 logout({
-                    returnTo: 'https://scavenger-frontend.vercel.app/home',
+                    returnTo: 'https://scavenger-frontend.vercel.app/',
                 })
             }
         >
