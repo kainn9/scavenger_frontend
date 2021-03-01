@@ -7,13 +7,15 @@ interface Props {
 }
 const SpotPlayerLoader: React.FC<Props> = function ({ uri }) {
     const [isMounted, setIsMounted] = useState<boolean>(false);
+    const [uriSwap, setUriSwap] = useState<string>('spotify:album:27ftYHLeunzcSzb33Wk1hf');
     useEffect(() => {
         setIsMounted(true);
+        setUriSwap(uri);
     }, []);
 
     return isMounted ? (
         <SpotifyPlayer
-            uri={uri}
+            uri={uriSwap}
             size={{
                 width: '100%',
                 height: '45%',
