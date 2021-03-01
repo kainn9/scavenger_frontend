@@ -2,11 +2,13 @@
 .spot-search-prev {
     position: relative;
     padding: 1rem 1.8rem 1rem 1rem;
+    overflow-x: hidden;
 
     @include yellow-border-and-font();
     h1 {
         margin-bottom: 0.1rem;
         font-size: 2.2rem;
+        width: 80%;
     }
 
     span {
