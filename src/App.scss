@@ -12,6 +12,7 @@ body,
 #root,
 #transition-group {
     height: 100%;
+    overflow: hidden;
 }
 
 html {
@@ -28,7 +29,6 @@ body {
     //background-color: white;
     perspective: 1000;
     backface-visibility: hidden;
-    overflow: hidden;
 }
 // transition classes/anims
 

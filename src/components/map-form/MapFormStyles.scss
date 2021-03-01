@@ -149,14 +149,12 @@
     height: 70vh;
     .mf-active-music-mode {
         height: 80%;
-        padding-top: 3rem;
-        overflow-y: scroll;
+        padding-top: 1rem;
         .mf-spotify-comp-container {
-            margin-top: 1.25rem;
+            margin-top: 5rem;
             width: 65%;
             display: flex;
             justify-content: center;
-            align-items: center;
             height: 75%;
         }
     }
