@@ -3,7 +3,7 @@ import MapUiBtn from '../default-map-ui-btn/MapUiBtn';
 import './FindMeBtnStyles.scss';
 
 import { connect, ConnectedProps } from 'react-redux';
-import { PLACE_CL_MARKER, TOGGLE_IS_LOCKED } from '../../redux/current-location/currentLocationActions';
+import { PLACE_CL_MARKER } from '../../redux/current-location/currentLocationActions';
 import { Action, currentLocation } from '../../redux/current-location/currentLocationReducer';
 import { center } from '../../redux/map/mapReducer';
 import { SET_MAP_CENTER } from '../../redux/map/mapActions';

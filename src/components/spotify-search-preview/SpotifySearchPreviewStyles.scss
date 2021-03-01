@@ -1,0 +1,25 @@
+@import '../../mixins.scss';
+.spot-search-prev {
+    position: relative;
+    padding: 1rem 1.8rem 1rem 1rem;
+
+    @include yellow-border-and-font();
+    h1 {
+        margin-bottom: 0.1rem;
+        font-size: 2.2rem;
+    }
+
+    span {
+        font-size: 1.7rem;
+    }
+
+    .map-ui-btn {
+        position: absolute;
+        top: 0.1rem;
+        right: 1rem;
+
+        i {
+            font-size: 2rem;
+        }
+    }
+}

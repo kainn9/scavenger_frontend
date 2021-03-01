@@ -1,0 +1,76 @@
+@import '../../mixins.scss';
+$inputHeight: 2.8rem;
+$inputWidth: 100%;
+.spotify-search-container {
+    height: 100%;
+    width: 100%;
+    .spotify-search {
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        height: 75%;
+
+        .ss-results {
+            margin-top: 2rem;
+            overflow-y: scroll;
+            .tracks-header {
+                text-align: center;
+                padding-top: 1rem;
+            }
+            .spotify-emb-container {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+        }
+    }
+
+    .ss-results-active {
+        @include yellow-border-and-font();
+        width: $inputWidth;
+    }
+
+    .spotify-search-options {
+        display: flex;
+        justify-content: space-evenly;
+        width: 100%;
+    }
+    .ss-input-wrapper {
+        z-index: 3;
+        height: $inputHeight;
+        width: $inputWidth;
+        input {
+            height: 100%;
+            width: 100%;
+            @include removeWeirdChromAutofill();
+            background: none;
+            @include yellow-border-and-font();
+            padding-left: 2.4rem;
+
+            &:focus {
+                outline: none;
+            }
+        }
+    }
+
+    .ss-icon-wrapper {
+        position: absolute;
+        top: 0;
+        height: $inputHeight;
+        width: $inputWidth;
+        i {
+            position: absolute;
+            top: 0.35rem;
+            left: 0.25rem;
+        }
+    }
+
+    .ss-type-btn {
+        cursor: pointer;
+        @include yellow-border-and-font();
+        margin-bottom: 1rem;
+        font-size: 1.5rem;
+        padding: 0.8rem;
+    }
+}

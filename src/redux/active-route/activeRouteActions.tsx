@@ -40,3 +40,24 @@ export const SET_ACTIVE_ROUTE = function (route: activeRoute | null): { type: st
         payload: route,
     };
 };
+
+export const SET_ACTIVE_IMAGE = function (img: File | null): { type: string; payload: File | null } {
+    return {
+        type: 'SET_ACTIVE_IMAGE',
+        payload: img,
+    };
+};
+
+export const SET_ERROR = function (error: string | null): { type: string; payload: string | null } {
+    return {
+        type: 'SET_ERROR',
+        payload: error,
+    };
+};
+
+export const SET_ACTIVE_SOUND = function (uri: string | null): { type: string; payload: string | null } {
+    return {
+        type: 'SET_ACTIVE_SOUND',
+        payload: uri,
+    };
+};

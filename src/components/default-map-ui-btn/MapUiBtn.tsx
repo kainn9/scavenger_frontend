@@ -18,9 +18,10 @@ interface Props extends reduxProps {
     lock?: boolean;
     bottomText?: boolean;
     fontColor?: string;
+    style?: Record<string, unknown>;
 }
 
-const MapUiBtn: React.FC<Props> = function ({ iconName, text, bottomText, fontColor, clickFN }) {
+const MapUiBtn: React.FC<Props> = function ({ iconName, text, bottomText, fontColor, style, clickFN }) {
     const [iconFilled, setIconFilled] = useState<boolean>(false);
     return (
         <div
@@ -28,7 +29,7 @@ const MapUiBtn: React.FC<Props> = function ({ iconName, text, bottomText, fontCo
             onMouseOver={() => setIconFilled(true)}
             onMouseLeave={() => setIconFilled(false)}
             onClick={() => (clickFN ? clickFN() : null)}
-            style={fontColor ? { color: fontColor } : {}}
+            style={fontColor ? Object.assign({ color: fontColor }, style) : {}}
         >
             {bottomText ? null : <p>{text}</p>}
             <Icon className={!iconFilled ? `${iconName} outline` : iconName} />

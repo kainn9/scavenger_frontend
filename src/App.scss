@@ -24,7 +24,7 @@ body {
     box-sizing: border-box;
     font-family: 'Inconsolata', monospace, sans-serif;
     color: #ffd369;
-    background-color: #eeeeee;
+    background-color: #222831;
     //background-color: white;
     perspective: 1000;
     backface-visibility: hidden;
@@ -120,5 +120,38 @@ body {
     100% {
         opacity: 1;
         transform: translateZ(0) translateX(0);
+    }
+}
+
+@media only screen and (min-width: 600px) {
+    #root {
+        padding: 0 8% 0 8%;
+        .map-ui {
+            width: 84%;
+        }
+        .map-form {
+            width: 84%;
+        }
+
+        .map-form-colap {
+            width: 28%;
+            p {
+                font-size: 1.4rem;
+            }
+        }
+        .map-form-colap-middle {
+            left: 36%;
+            width: 28%;
+            p {
+                font-size: 1.4rem;
+            }
+        }
+        .map-form-colap-right {
+            width: 28%;
+            left: 64%;
+            p {
+                font-size: 1.4rem;
+            }
+        }
     }
 }

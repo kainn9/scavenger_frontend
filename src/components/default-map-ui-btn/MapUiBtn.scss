@@ -1,5 +1,10 @@
-@import '../../mixins.scss';
-
 .map-ui-btn {
-    @include mapUiBtn();
+    text-align: center;
+    i {
+        font-size: 4rem;
+        margin: 0;
+    }
+    &:hover {
+        cursor: pointer;
+    }
 }

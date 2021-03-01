@@ -26,7 +26,6 @@ const App: React.FC<IndexProps> = function ({ location }) {
             </Dimmer>
         );
     }
-
     return (
         <>
             <TransitionGroup

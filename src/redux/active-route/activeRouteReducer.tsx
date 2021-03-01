@@ -3,6 +3,8 @@ export type activeNode = {
     lat: number;
     lng: number;
     key: Date | null;
+    img?: File | null;
+    soundMedia?: string | null;
 } | null;
 export type activeRoute = Array<activeNode>;
 
@@ -10,6 +12,7 @@ export interface ARRootState {
     prepNode: boolean;
     activeNode: activeNode;
     activeRoute: activeRoute;
+    error?: string | null;
 }
 
 export interface Action {
@@ -22,6 +25,7 @@ const INIT_STATE: ARRootState = {
     prepNode: false,
     activeNode: null,
     activeRoute: [],
+    error: null,
 };
 
 const activeRouteReducer = function (prevState = INIT_STATE, { type, payload }: Action): ARRootState {
@@ -41,11 +45,11 @@ const activeRouteReducer = function (prevState = INIT_STATE, { type, payload }: 
                 ...prevState,
                 activeRoute: [...prevState.activeRoute, payload],
             };
-        case 'SET_ACTIVE_TITLE':
-            const updatedNode = prevState.activeNode ? { ...prevState.activeNode, title: payload } : null;
+        case 'SET_ACTIVE_IMAGE':
+            //const updatedNode = prevState.activeNode ? { ...prevState.activeNode, title: payload } : null;
             return {
                 ...prevState,
-                activeNode: updatedNode,
+                activeNode: Object.assign({}, prevState.activeNode, { img: payload }),
             };
         case 'FILTER_NODE':
             const filteredRoute = prevState.activeRoute.filter((route) => {
@@ -59,6 +63,21 @@ const activeRouteReducer = function (prevState = INIT_STATE, { type, payload }: 
             return {
                 ...prevState,
                 activeRoute: payload,
+            };
+        case 'SET_ACTIVE_TITLE':
+            return {
+                ...prevState,
+                activeNode: Object.assign({}, prevState.activeNode, { title: payload }),
+            };
+        case 'SET_ERROR':
+            return {
+                ...prevState,
+                error: payload,
+            };
+        case 'SET_ACTIVE_SOUND':
+            return {
+                ...prevState,
+                activeNode: Object.assign({}, prevState.activeNode, { soundMedia: payload }),
             };
         default:
             return prevState;

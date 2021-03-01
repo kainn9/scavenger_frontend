@@ -44,6 +44,9 @@ const CreatePage: React.FC<RouteComponentProps & reduxProps> = function ({
                 lat: e.latLng.lat(),
                 lng: e.latLng.lng(),
                 title: '',
+                img: null,
+                text: '',
+                soundMedia: null,
             };
             console.log(newNode);
 
