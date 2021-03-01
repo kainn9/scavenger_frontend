@@ -42,9 +42,9 @@ const SpotifySearch: React.FC<reduxProps> = function ({ activeNode, SET_ACTIVE_S
         const trimmedInput = value.trim()
         if (trimmedInput.length > 0) {
             results = await Promise.all([
-                `https://api.spotify.com/v1/search?q=${trimmedInput}&type=track`,
-                `https://api.spotify.com/v1/search?q=${trimmedInput}&type=show`,
-                `https://api.spotify.com/v1/search?q=${trimmedInput}&type=playlist`,
+                `https://api.spotify.com/v1/search?q=${trimmedInput}&type=track&market=from_token`,
+                `https://api.spotify.com/v1/search?q=${trimmedInput}&type=show&market=from_token`,
+                `https://api.spotify.com/v1/search?q=${trimmedInput}&type=playlist&market=from_token`,
             ].map(async (url) => {
                 const resp = await fetch(url, {
                     method: 'GET',
