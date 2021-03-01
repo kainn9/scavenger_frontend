@@ -151,6 +151,7 @@ body {
 
         .map-form-colap {
             width: 28%;
+            height: 10rem;
             p {
                 font-size: 1.4rem;
             }
@@ -158,6 +159,7 @@ body {
         .map-form-colap-middle {
             left: 36%;
             width: 28%;
+            height: 10rem;
             p {
                 font-size: 1.4rem;
             }
@@ -165,12 +167,16 @@ body {
         .map-form-colap-right {
             width: 28%;
             left: 64%;
+            height: 10rem;
             p {
                 font-size: 1.4rem;
             }
         }
 
         .spotify-emb-container {
+            .is-song {
+                height: 150rem;
+            }
         }
     }
 }

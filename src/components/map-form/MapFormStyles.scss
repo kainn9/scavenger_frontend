@@ -149,7 +149,8 @@
     height: 70vh;
     .mf-active-music-mode {
         height: 80%;
-        padding-top: 1rem;
+        padding-top: 3rem;
+        overflow-y: scroll;
         .mf-spotify-comp-container {
             margin-top: 1.25rem;
             width: 65%;

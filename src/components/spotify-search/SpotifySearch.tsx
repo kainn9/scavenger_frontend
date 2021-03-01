@@ -116,7 +116,7 @@ const SpotifySearch: React.FC<reduxProps> = function ({ activeNode, SET_ACTIVE_S
     return (
         activeNode && activeNode.soundMedia ? (
             <div className="spotify-emb-container">
-                <SpotPlayerLoader uri={activeNode.soundMedia} />
+                <SpotPlayerLoader uri={activeNode.soundMedia} isSong={resultType === 'tracks'} />
                 <div className="spacer" style={{height: '3rem'}}></div>
                 <MapUiBtn iconName="trash alternate" text="Clear Media" bottomText  clickFN={() => SET_ACTIVE_SOUND(null)}/>
             </div>
