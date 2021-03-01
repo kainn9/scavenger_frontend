@@ -1,0 +1,19 @@
+.info-window-inner {
+    color: #222831;
+    h1 {
+        text-align: center;
+    }
+    .if-image-container {
+        text-align: center;
+        width: 100%;
+        img {
+            width: 90%;
+            max-height: 100rem;
+            object-fit: cover;
+        }
+    }
+    .if-music-container {
+        display: flex;
+        justify-content: center;
+    }
+}

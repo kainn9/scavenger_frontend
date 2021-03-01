@@ -1,10 +1,11 @@
-import React from 'react';
-import { Marker } from '@react-google-maps/api';
+import React, { useState } from 'react';
+import { InfoWindow, Marker } from '@react-google-maps/api';
 import { Action, activeNode, activeRoute, ARRootState } from '../../redux/active-route/activeRouteReducer';
 import './PreviewMarkerStyles.scss';
 import signPostIcon from '../../assets/sign-post-icon.png';
 import { SET_ACTIVE_NODE, SET_ACTIVE_ROUTE } from '../../redux/active-route/activeRouteActions';
 import { connect, ConnectedProps } from 'react-redux';
+import SpotPlayerLoader from '../spot-player-w-loader/SpotPlayerLoader';
 
 const msp = ({ activeRoute }: { activeRoute: ARRootState }) => ({
     activeRoute: activeRoute.activeRoute,
@@ -23,6 +24,8 @@ interface Props extends reduxProps {
 }
 
 const PreviewMarker: React.FC<Props> = function ({ node, activeNode, activeRoute, SET_ACTIVE_NODE, SET_ACTIVE_ROUTE }) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const [infoWindow, setInfoWindow] = useState<any | null>(null);
     const revertOldNodePosOnSwitch = (stateArray: activeRoute) => {
         const oldNode = stateArray.find((node) => {
             if (node && activeNode) return node.key === activeNode.key;
@@ -36,12 +39,12 @@ const PreviewMarker: React.FC<Props> = function ({ node, activeNode, activeRoute
     };
 
     const clickHandler = () => {
-        console.log('testo');
         if ((activeNode && node && node && activeNode.key !== node.key) || (node && !activeNode)) {
             revertOldNodePosOnSwitch([...activeRoute]);
             SET_ACTIVE_NODE(null);
             SET_ACTIVE_NODE({ ...node });
         }
+        setInfoWindow(true);
     };
 
     const updateActiveNodeOnDrag = ({
@@ -77,6 +80,34 @@ const PreviewMarker: React.FC<Props> = function ({ node, activeNode, activeRoute
                 onClick={clickHandler}
                 onDragEnd={updateActiveNodeOnDrag}
             ></Marker>
+            {infoWindow ? (
+                <InfoWindow
+                    position={{ lat: node.lat, lng: node.lng }}
+                    onCloseClick={() => {
+                        setInfoWindow(null);
+                    }}
+                >
+                    <div className="info-window-inner">
+                        <h1>{node && node.title ? node.title : ''}</h1>
+                        <p>{node && node.text ? node.text : ''}</p>
+                        <div className="if-image-container">
+                            {node && node.img ? (
+                                <>
+                                    <img
+                                        className="preview-img"
+                                        src={typeof node.img === 'string' ? node.img : URL.createObjectURL(node.img)}
+                                    />
+                                </>
+                            ) : null}
+                        </div>
+                        <div className="if-music-container">
+                            {node && node.soundMedia ? (
+                                <SpotPlayerLoader uri={node.soundMedia} customWidth="90%" />
+                            ) : null}
+                        </div>
+                    </div>
+                </InfoWindow>
+            ) : null}
         </div>
     ) : null;
 };

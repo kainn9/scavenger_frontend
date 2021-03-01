@@ -4,8 +4,9 @@ import SpotifyPlayer from 'react-spotify-player';
 
 interface Props {
     uri: string;
+    customWidth?: string;
 }
-const SpotPlayerLoader: React.FC<Props> = function ({ uri }) {
+const SpotPlayerLoader: React.FC<Props> = function ({ uri, customWidth }) {
     const [isMounted, setIsMounted] = useState<boolean>(false);
     const [uriSwap, setUriSwap] = useState<string>('spotify:album:27ftYHLeunzcSzb33Wk1hf');
     useEffect(() => {
@@ -16,7 +17,7 @@ const SpotPlayerLoader: React.FC<Props> = function ({ uri }) {
         <SpotifyPlayer
             uri={uriSwap}
             size={{
-                width: '230rem',
+                width: customWidth || '230rem',
                 height: uri.slice(8, 13) === 'track' ? '85rem' : '153rem',
             }}
             view="list"

@@ -10,6 +10,7 @@ import {
     SET_ACTIVE_IMAGE,
     SET_ACTIVE_NODE,
     SET_ACTIVE_ROUTE,
+    SET_ACTIVE_TEXT,
     SET_ACTIVE_TITLE,
     SET_ERROR,
     SET_PREP_STATE,
@@ -29,6 +30,7 @@ const mdp = (dispatch: (action: Action) => void) => ({
     SET_PREP_STATE: (bool: boolean) => dispatch(SET_PREP_STATE(bool)),
     SET_ACTIVE_NODE: (node: activeNode | null) => dispatch(SET_ACTIVE_NODE(node)),
     SET_ACTIVE_TITLE: (input: string) => dispatch(SET_ACTIVE_TITLE(input)),
+    SET_ACTIVE_TEXT: (input: string) => dispatch(SET_ACTIVE_TEXT(input)),
     SET_ACTIVE_ROUTE: (route: activeRoute | null) => dispatch(SET_ACTIVE_ROUTE(route)),
     FILTER_NODE: (key: Date | null) => dispatch(FILTER_NODE(key)),
     SET_ERROR: (error: string | null) => dispatch(SET_ERROR(error)),
@@ -48,6 +50,7 @@ const MapForm: React.FC<reduxProps> = function ({
     SET_ACTIVE_NODE,
     SET_ACTIVE_ROUTE,
     SET_ACTIVE_IMAGE,
+    SET_ACTIVE_TEXT,
     FILTER_NODE,
     SET_ERROR,
     
@@ -109,7 +112,7 @@ const MapForm: React.FC<reduxProps> = function ({
             if (node && activeNode && node.key === activeNode.key) match = node;
         }
         if (match && activeNode) {
-            if (match.title !== activeNode.title || match.lat !== activeNode.lat || match.lng !== activeNode.lng || match.img !== activeNode.img ||  match.soundMedia !== activeNode.soundMedia) return true;
+            if (match.title !== activeNode.title || match.lat !== activeNode.lat || match.lng !== activeNode.lng || match.img !== activeNode.img ||  match.soundMedia !== activeNode.soundMedia || match.soundMedia !== activeNode.soundMedia) return true;
         }
         
         return false;
@@ -150,7 +153,7 @@ const MapForm: React.FC<reduxProps> = function ({
                         <LineInput name="title" value={activeNode.title} inputHandler={inputHandler}>Enter Title</LineInput>
                         <div className="text-body">
                             <label className={true ? 'form-input-label' : 'label-shrink'}>Add Body</label>
-                            <textarea />
+                            <textarea name="body-text" onChange={({ target: { value } }) => SET_ACTIVE_TEXT(value)} />
                         </div>
                     </div>
                 ) : prepNode ? (

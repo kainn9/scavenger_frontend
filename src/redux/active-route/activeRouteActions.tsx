@@ -20,6 +20,12 @@ export const PUSH_TO_ACTIVE_ROUTE = function (node: activeNode): { type: string;
         payload: node,
     };
 };
+export const SET_ACTIVE_TEXT = function (input: string): { type: string; payload: string } {
+    return {
+        type: 'SET_ACTIVE_TEXT',
+        payload: input,
+    };
+};
 export const SET_ACTIVE_TITLE = function (input: string): { type: string; payload: string } {
     return {
         type: 'SET_ACTIVE_TITLE',

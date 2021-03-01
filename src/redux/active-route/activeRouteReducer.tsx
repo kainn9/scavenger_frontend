@@ -1,5 +1,6 @@
 export type activeNode = {
     title: string;
+    text: string;
     lat: number;
     lng: number;
     key: Date | null;
@@ -68,6 +69,11 @@ const activeRouteReducer = function (prevState = INIT_STATE, { type, payload }: 
             return {
                 ...prevState,
                 activeNode: Object.assign({}, prevState.activeNode, { title: payload }),
+            };
+        case 'SET_ACTIVE_TEXT':
+            return {
+                ...prevState,
+                activeNode: Object.assign({}, prevState.activeNode, { text: payload }),
             };
         case 'SET_ERROR':
             return {
