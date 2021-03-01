@@ -1,5 +1,7 @@
 .info-window-inner {
     color: #222831;
+    overflow-y: scroll;
+    overflow-x: hidden;
     h1 {
         text-align: center;
     }
