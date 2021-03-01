@@ -126,16 +126,19 @@ body {
 @media only screen and (min-width: 600px) {
     #root {
         .map-form {
-            height: 43vh;
+            height: 38vh;
             .mf-empty-pc {
-                height: 34vh;
+                height: 29vh;
             }
         }
         .map-form-music {
             height: 60vh;
         }
         .mf-active-music-mode {
-            height: 60vh;
+            height: 50vh;
+        }
+        .mf-active-img-mode {
+            height: 29vh;
         }
 
         padding: 0 8% 0 8%;
