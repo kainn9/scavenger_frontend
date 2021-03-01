@@ -1,11 +1,11 @@
 @import '../../mixins.scss';
 .map-form {
-    height: 43vh;
+    height: 30vh;
     width: 100%;
     padding: 1rem;
     background-image: linear-gradient(to right, #222831, #393e46);
     position: absolute;
-    bottom: 11rem;
+    bottom: 8rem;
     display: flex;
     flex-direction: column;
     color: #ffd369;
@@ -47,13 +47,11 @@
         transform: translateY(-5rem);
         font-size: 1.5rem;
         word-wrap: break-word;
-        text-align: center;
         width: 100%;
-        justify-content: center;
-        align-items: center;
         color: red;
         font-weight: 800;
         display: flex;
+        @include justifyAlignTextCenter();
         .map-ui-btn {
             padding-bottom: 1.4rem;
             padding-left: 0.5rem;
@@ -64,7 +62,7 @@
     }
 
     .mf-active-container {
-        min-height: 31vh;
+        min-height: 14vh;
         width: 100%;
         border: #ffd369 1px solid;
         border-radius: 0.3rem;
@@ -77,8 +75,7 @@
             width: 100%;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            @include justifyAlignTextCenter();
             font-size: 2.7rem;
             font-weight: 700;
         }
@@ -149,15 +146,15 @@
 .map-form-music {
     height: 60vh;
     .mf-active-music-mode {
+        height: 80%;
         padding-top: 1rem;
-        height: 90%;
         .mf-spotify-comp-container {
             margin-top: 1.25rem;
             width: 65%;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 85%;
+            height: 100%;
         }
     }
 }

@@ -18,7 +18,7 @@ const SpotPlayerLoader: React.FC<Props> = function ({ uri }) {
             uri={uriSwap}
             size={{
                 width: '100%',
-                height: '45%',
+                height: '70rem',
             }}
             view="list"
             theme="black"

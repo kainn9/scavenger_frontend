@@ -125,6 +125,19 @@ body {
 
 @media only screen and (min-width: 600px) {
     #root {
+        .map-form {
+            height: 43vh;
+            .mf-empty-pc {
+                height: 34vh;
+            }
+        }
+        .map-form-music {
+            height: 60vh;
+        }
+        .mf-active-music-mode {
+            height: 60vh;
+        }
+
         padding: 0 8% 0 8%;
         .map-ui {
             width: 84%;
@@ -152,6 +165,9 @@ body {
             p {
                 font-size: 1.4rem;
             }
+        }
+
+        .spotify-emb-container {
         }
     }
 }
