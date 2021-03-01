@@ -79,6 +79,7 @@
             @include justifyAlignTextCenter();
             font-size: 2rem;
             font-weight: 700;
+            padding: 0.3rem;
         }
 
         .mf-active-node {
@@ -109,11 +110,10 @@
             }
         }
     }
-
     .mf-active-img-mode {
         padding-top: 1.3rem;
+
         .preview-img {
-            height: 62%;
             width: 90%;
             object-fit: cover;
             margin-bottom: 1.2rem;
@@ -147,6 +147,9 @@
         display: flex;
         justify-content: center;
     }
+}
+.map-form-img {
+    height: 60vh;
 }
 .map-form-music {
     height: 70vh;

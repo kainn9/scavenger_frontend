@@ -192,7 +192,7 @@ const MapForm: React.FC<reduxProps> = function ({
         </form>
     )
     else if (menuMode === "img") return (
-        <form className="map-form">
+        <form className={`map-form ${activeNode && activeNode.img ? 'map-form-img' : ''}`}>
             {activeNode ? (
                 <>
                     <div className="mf-error">
