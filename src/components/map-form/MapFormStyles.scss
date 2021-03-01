@@ -96,6 +96,7 @@
         }
         .mf-music-options {
             height: 3.3rem;
+            position: relative;
             width: 65%;
             border: #ffd369 1px solid;
             border-radius: 0.3rem;
@@ -153,7 +154,7 @@
         height: 80%;
         padding-top: 1rem;
         .mf-spotify-comp-container {
-            margin-top: 5rem;
+            margin-top: 1.5rem;
             width: 65%;
             display: flex;
             justify-content: center;
