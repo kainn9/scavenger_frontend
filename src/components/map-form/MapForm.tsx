@@ -129,8 +129,10 @@ const MapForm: React.FC<reduxProps> = function ({
         Object.assign(addNode, { ...addNodeData, key: Date.now(), });
         // assign state
         SET_ACTIVE_ROUTE(routeClone);
-        // clear active
-        SET_ACTIVE_NODE(null);
+        if (addNode) {
+            SET_ACTIVE_NODE(addNode);
+        } else  SET_ACTIVE_NODE(null);
+       
     };
 
     useEffect(() => {

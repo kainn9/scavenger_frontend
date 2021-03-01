@@ -36,8 +36,10 @@ const PreviewMarker: React.FC<Props> = function ({ node, activeNode, activeRoute
     };
 
     const clickHandler = () => {
+        console.log('testo');
         if ((activeNode && node && node && activeNode.key !== node.key) || (node && !activeNode)) {
             revertOldNodePosOnSwitch([...activeRoute]);
+            SET_ACTIVE_NODE(null);
             SET_ACTIVE_NODE({ ...node });
         }
     };
