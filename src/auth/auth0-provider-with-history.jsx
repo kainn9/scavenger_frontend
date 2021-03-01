@@ -6,7 +6,7 @@ import { withRouter } from 'react-router-dom';
 const Auth0ProviderWithHistory = ({ children }) => {
     const domain = process.env.REACT_APP_AUTH0_DOMAIN;
     const clientId = process.env.REACT_APP_AUTH0_CLIENT_ID;
-    const redirectURI = process.env.REACT_APP_FRLINK;
+    // const redirectURI = process.env.REACT_APP_FRLINK;
 
     //const history = useHistory();
 
@@ -17,7 +17,7 @@ const Auth0ProviderWithHistory = ({ children }) => {
         <Auth0Provider
             domain={domain}
             clientId={clientId}
-            redirectUri={redirectURI}
+            redirectUri={window.location.origin}
             //onRedirectCallback={onRedirectCallback}
         >
             {children}
