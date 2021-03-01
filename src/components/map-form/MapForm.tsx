@@ -112,7 +112,7 @@ const MapForm: React.FC<reduxProps> = function ({
             if (node && activeNode && node.key === activeNode.key) match = node;
         }
         if (match && activeNode) {
-            if (match.title !== activeNode.title || match.lat !== activeNode.lat || match.lng !== activeNode.lng || match.img !== activeNode.img ||  match.soundMedia !== activeNode.soundMedia || match.soundMedia !== activeNode.soundMedia) return true;
+            if (match.text !== activeNode.text || match.title !== activeNode.title || match.lat !== activeNode.lat || match.lng !== activeNode.lng || match.img !== activeNode.img ||  match.soundMedia !== activeNode.soundMedia) return true;
         }
         
         return false;
