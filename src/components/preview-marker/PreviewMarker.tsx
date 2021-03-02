@@ -26,22 +26,27 @@ interface Props extends reduxProps {
 const PreviewMarker: React.FC<Props> = function ({ node, activeNode, activeRoute, SET_ACTIVE_NODE, SET_ACTIVE_ROUTE }) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [infoWindow, setInfoWindow] = useState<any | null>(null);
-    const revertOldNodePosOnSwitch = (stateArray: activeRoute) => {
-        const oldNode = stateArray.find((node) => {
-            if (node && activeNode) return node.key === activeNode.key;
-        });
 
-        if (activeNode)
-            Object.assign(oldNode, {
-                lat: activeNode.lat,
-                lng: activeNode.lng,
+    const revertOldNodePosOnSwitch = (route: activeRoute) => {
+        if (activeNode) {
+            const index = route.findIndex((n) => {
+                if (n && activeNode) return n.key === activeNode.key;
             });
+            if (index !== -1) {
+                Object.assign(route[index], {
+                    lat: activeNode.lat,
+                    lng: activeNode.lng,
+                });
+
+                SET_ACTIVE_ROUTE(activeRoute.map((n) => Object.assign({}, n)));
+            }
+        }
     };
 
     const clickHandler = () => {
-        if ((activeNode && node && node && activeNode.key !== node.key) || (node && !activeNode)) {
+        // if active node key matches node key -or- no activeNode
+        if ((activeNode && node && activeNode.key !== node.key) || (node && !activeNode)) {
             revertOldNodePosOnSwitch([...activeRoute]);
-            SET_ACTIVE_NODE(null);
             SET_ACTIVE_NODE({ ...node });
         }
         setInfoWindow(true);

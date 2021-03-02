@@ -76,7 +76,7 @@ const MapForm: React.FC<reduxProps> = function ({
         if (activeNode) {
             // update coords of match in arr
             const routeClone = [...activeRoute];
-
+            // ref of object in clone of references so still same re
             const arrayNode = routeClone.find((rNode) => {
                 if (rNode && activeNode) return rNode.key === activeNode.key;
             });
@@ -99,13 +99,20 @@ const MapForm: React.FC<reduxProps> = function ({
     const inputHandler = ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
         SET_ACTIVE_TITLE(value);
     };
-    const matchNode = (routes: activeRoute) => {
-        let match = null;
-        for (const node of routes) {
-            if (node && activeNode && node.key === activeNode.key) match = node;
+    // const matchNode = (routes: activeRoute) => {
+    //     let match = null;
+    //     for (const node of routes) {
+    //         if (node && activeNode && node.key === activeNode.key) match = node;
+    //     }
+    //     return match;
+    // };
+    const matchNodeIndex = (routes: activeRoute) => {
+        for (let i = 0; i < routes.length; i++) {
+            const node = routes[i];
+            if (node && activeNode && node.key === activeNode.key) return i;
         }
-        return match;
-    };
+        return null;
+    }
     const isNodeEdited = (routes: activeRoute) => {
         let match = null;
         for (const node of routes) {
@@ -118,24 +125,24 @@ const MapForm: React.FC<reduxProps> = function ({
         return false;
     };
     const addNodeToActiveRoute = () => {
-        const routeClone = [...activeRoute];
-        // get activeNode's place in array clone
-        const addNode = matchNode(routeClone);
+   
+        // ref to current render node
+        const index = matchNodeIndex(activeRoute);
+        let newNode = index || index === 0 ? activeRoute[index] : null;
 
-        const addNodeData = { ...activeNode };
+
         // dont want to overwrite lat and lng in array because inverted state logic
-        if (addNode) {
-            addNodeData.lat = addNode.lat;
-            addNodeData.lng = addNode.lng;
+        if (newNode && activeNode && (index || index === 0)) {
+            newNode = Object.assign(newNode, activeNode, {
+                key: Date.now() + '',
+                lat: newNode.lat,
+                lng: newNode.lng,
+            })
+
+            SET_ACTIVE_ROUTE(activeRoute.map((node) => Object.assign({}, node)));
+            SET_ACTIVE_NODE(Object.assign({}, activeRoute[index]));
         }
-        // create new state for render array
-        Object.assign(addNode, { ...addNodeData, key: Date.now(), });
-        // assign state
-        SET_ACTIVE_ROUTE(routeClone);
-        if (addNode) {
-            SET_ACTIVE_NODE(addNode);
-        } else  SET_ACTIVE_NODE(null);
-       
+
     };
 
     useEffect(() => {
@@ -153,7 +160,7 @@ const MapForm: React.FC<reduxProps> = function ({
                         <LineInput name="title" value={activeNode.title} inputHandler={inputHandler}>Enter Title</LineInput>
                         <div className="text-body">
                             <label className={true ? 'form-input-label' : 'label-shrink'}>Add Body</label>
-                            <textarea name="body-text" onChange={({ target: { value } }) => SET_ACTIVE_TEXT(value)} />
+                            <textarea name="body-text" value={activeNode.text} onChange={({ target: { value } }) => SET_ACTIVE_TEXT(value)} />
                         </div>
                     </div>
                 ) : prepNode ? (
