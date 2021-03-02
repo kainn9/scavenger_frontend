@@ -50,8 +50,8 @@ const CreatePage: React.FC<RouteComponentProps & reduxProps> = function ({
             };
             console.log(newNode);
 
-            SET_ACTIVE_NODE(newNode);
-            PUSH_TO_ACTIVE_ROUTE({ ...newNode });
+            PUSH_TO_ACTIVE_ROUTE(newNode);
+            SET_ACTIVE_NODE({ ...newNode });
         }
     };
 
