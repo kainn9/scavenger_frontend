@@ -1,21 +1,26 @@
 .info-window-inner {
+    max-height: 25rem;
+    max-width: 50rem;
     color: #222831;
+    text-align: center;
+    overflow: hidden;
     overflow-y: scroll;
     overflow-x: hidden;
-    h1 {
-        text-align: center;
-    }
-    .if-image-container {
-        text-align: center;
-        width: 100%;
-        img {
-            width: 90%;
-            max-height: 100rem;
-            object-fit: cover;
+    .if-overflow {
+        p {
+            width: 100%;
         }
-    }
-    .if-music-container {
-        display: flex;
-        justify-content: center;
+        .if-image-container {
+            width: 100%;
+            img {
+                width: 90%;
+                max-height: 100rem;
+                object-fit: cover;
+            }
+        }
+        .if-music-container {
+            display: flex;
+            justify-content: center;
+        }
     }
 }

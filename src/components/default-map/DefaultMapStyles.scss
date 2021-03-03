@@ -15,3 +15,35 @@
         position: absolute;
     }
 }
+.search-bar {
+    height: fit-content;
+    width: fit-content;
+    position: absolute;
+    right: 3rem;
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    top: 10rem;
+    text-align: center;
+    input {
+        width: 25rem;
+        height: 3rem;
+        color: #ffd369;
+        background-image: linear-gradient(to right, #222831, #393e46);
+        box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
+        border-radius: 0.6rem;
+        opacity: 0.9;
+        outline: none;
+        &::placeholder {
+            color: #ffd369;
+        }
+    }
+}
+
+ul[role='listbox'] {
+    background-image: linear-gradient(to right, #222831, #393e46);
+    border-radius: 0.4rem;
+    outline: none;
+}

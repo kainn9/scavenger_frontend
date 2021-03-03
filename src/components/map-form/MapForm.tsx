@@ -18,6 +18,7 @@ import {
 import LineInput from '../line-input/LineInput';
 import UploadBtn from '../prettier-upload-btn/UploadBtn';
 import SpotifySearch from '../spotify-search/SpotifySearch';
+import { SET_INFO_WINDOW } from '../../redux/map/mapActions';
 
 const msp = ({ activeRoute }: { activeRoute: ARRootState }) => ({
     prepNode: activeRoute.prepNode,
@@ -35,6 +36,7 @@ const mdp = (dispatch: (action: Action) => void) => ({
     FILTER_NODE: (key: Date | null) => dispatch(FILTER_NODE(key)),
     SET_ERROR: (error: string | null) => dispatch(SET_ERROR(error)),
     SET_ACTIVE_IMAGE: (imgFile: File | null) => dispatch(SET_ACTIVE_IMAGE(imgFile)),
+    SET_INFO_WINDOW: (node: activeNode) => dispatch(SET_INFO_WINDOW(node)),
 });
 
 const connector = connect(msp, mdp);
@@ -53,6 +55,7 @@ const MapForm: React.FC<reduxProps> = function ({
     SET_ACTIVE_TEXT,
     FILTER_NODE,
     SET_ERROR,
+    SET_INFO_WINDOW,
     
 }) {
     // local state to toggle btwn form's collapsed displays
@@ -125,6 +128,14 @@ const MapForm: React.FC<reduxProps> = function ({
         return false;
     };
     const addNodeToActiveRoute = () => {
+        if (activeRoute.length > 7) {
+            SET_ERROR('MAX NODE COUNT IS 8(SORRY, CANT AFFORD PREM GOOG MAPS LOL)');
+            return;
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        } else if (activeNode!.title.length <= 0) {
+            SET_ERROR('node missing required property: "title"');
+            return;
+        }
    
         // ref to current render node
         const index = matchNodeIndex(activeRoute);
@@ -141,6 +152,7 @@ const MapForm: React.FC<reduxProps> = function ({
 
             SET_ACTIVE_ROUTE(activeRoute.map((node) => Object.assign({}, node)));
             SET_ACTIVE_NODE(Object.assign({}, activeRoute[index]));
+            SET_INFO_WINDOW(Object.assign({}, activeRoute[index]));
         }
 
     };
@@ -177,7 +189,7 @@ const MapForm: React.FC<reduxProps> = function ({
             </div>
             {activeNode ? (
                 <div className="mf-btns-container">
-                    <MapUiBtn text="Cancel" iconName="window close" bottomText clickFN={cancelNodeClickHandler} />
+                    <MapUiBtn text="Unselect" iconName="window close" bottomText clickFN={cancelNodeClickHandler} />
                     <MapUiBtn text="Menus" iconName="arrow alternate circle down" bottomText clickFN={() => setMenuMode('')} />
                     <MapUiBtn
                         text="Remove"
@@ -192,7 +204,7 @@ const MapForm: React.FC<reduxProps> = function ({
                 </div>
             ) : prepNode ? (
                 <div className="mf-btns-container">
-                    <MapUiBtn text="Cancel" iconName="window close" bottomText clickFN={cancelNodeClickHandler} />
+                    <MapUiBtn text="Unselect" iconName="window close" bottomText clickFN={cancelNodeClickHandler} />
                 </div>
             ) : (
                 <div className="mf-btns-container">
@@ -232,7 +244,7 @@ const MapForm: React.FC<reduxProps> = function ({
                     </div>
 
                     <div className="mf-btns-container">
-                        <MapUiBtn text="Cancel" iconName="window close" bottomText clickFN={cancelNodeClickHandler} />
+                        <MapUiBtn text="Unselect" iconName="window close" bottomText clickFN={cancelNodeClickHandler} />
                         <MapUiBtn iconName="arrow alternate circle down" text="Menus" bottomText  clickFN={() => setMenuMode('')} />
                         {isNodeEdited(activeRoute) ? (
                         <MapUiBtn text="Lock In" iconName="check circle" bottomText clickFN={addNodeToActiveRoute} />
@@ -296,7 +308,7 @@ const MapForm: React.FC<reduxProps> = function ({
                     </div>
 
                     <div className="mf-btns-container">
-                        <MapUiBtn text="Cancel" iconName="window close" bottomText clickFN={cancelNodeClickHandler} />
+                        <MapUiBtn text="Unselect" iconName="window close" bottomText clickFN={cancelNodeClickHandler} />
                         <MapUiBtn iconName="arrow alternate circle down" text="Menus" bottomText  clickFN={() => setMenuMode('')} />
                         {isNodeEdited(activeRoute) ? (
                         <MapUiBtn text="Lock In" iconName="check circle" bottomText clickFN={addNodeToActiveRoute} />

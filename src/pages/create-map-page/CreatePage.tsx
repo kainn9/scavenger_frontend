@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { connect, ConnectedProps } from 'react-redux';
@@ -12,11 +13,15 @@ import { Action, activeNode, ARRootState } from '../../redux/active-route/active
 import './CreatePageStyles.scss';
 import LogoutButton from '../../components/logout-button/LogoutButton';
 import PreviewMarker from '../../components/preview-marker/PreviewMarker';
+import ToggleDirectionsBtn from '../../components/toggle-directions-btn/ToggleDirectionsBtn';
+import DirectionsComp from '../../components/directions/DirectionsComp';
+import { MRootState } from '../../redux/map/mapReducer';
 
-const msp = ({ activeRoute }: { activeRoute: ARRootState }) => ({
+const msp = ({ activeRoute, map }: { activeRoute: ARRootState; map: MRootState }) => ({
     prepNode: activeRoute.prepNode,
     activeNode: activeRoute.activeNode,
     activeRoute: activeRoute.activeRoute,
+    showDirections: map.showDirections,
 });
 
 const mdp = (dispatch: (action: Action) => void) => ({
@@ -32,6 +37,7 @@ const CreatePage: React.FC<RouteComponentProps & reduxProps> = function ({
     history,
     prepNode,
     activeRoute,
+    showDirections,
     SET_PREP_STATE,
     SET_ACTIVE_NODE,
     PUSH_TO_ACTIVE_ROUTE,
@@ -48,7 +54,6 @@ const CreatePage: React.FC<RouteComponentProps & reduxProps> = function ({
                 text: '',
                 soundMedia: null,
             };
-            console.log(newNode);
 
             PUSH_TO_ACTIVE_ROUTE(newNode);
             SET_ACTIVE_NODE({ ...newNode });
@@ -73,6 +78,9 @@ const CreatePage: React.FC<RouteComponentProps & reduxProps> = function ({
                 onMapClick={addNode}
             >
                 {renderRouteNodes()}
+
+                {activeRoute.length > 1 && showDirections ? <DirectionsComp /> : null}
+                <ToggleDirectionsBtn />
             </DefaultMap>
             <MapForm />
             <MapUiBar>
