@@ -1,5 +1,3 @@
-import { activeNode } from '../active-route/activeRouteReducer';
-
 export interface center {
     lat: number;
     lng: number;
@@ -11,7 +9,6 @@ export type infoBox = {
 
 export interface MRootState {
     center: center;
-    infoBox: activeNode | null;
     showDirections: boolean;
 }
 
@@ -23,7 +20,6 @@ export interface Action {
 
 const INIT_STATE = {
     center: { lat: 40.7128, lng: -74.006 },
-    infoBox: null,
     showDirections: false,
 };
 
@@ -34,20 +30,10 @@ const mapReducer = function (prevState = INIT_STATE, { type, payload }: Action):
                 ...prevState,
                 center: payload,
             };
-        case 'SET_INFO_BOX':
-            return {
-                ...prevState,
-                infoBox: payload,
-            };
         case 'TOGGLE_DIRECTIONS':
             return {
                 ...prevState,
                 showDirections: !prevState.showDirections,
-            };
-        case 'SET_INFO_WINDOW':
-            return {
-                ...prevState,
-                infoBox: payload,
             };
         default:
             return prevState;
