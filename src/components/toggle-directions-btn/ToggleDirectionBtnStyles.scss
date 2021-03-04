@@ -1,7 +1,6 @@
 .toggle-d-btn {
-    height: 8.5rem;
-    width: 8.5rem;
-    z-index: 3;
+    height: 7.2rem;
+    width: 7.2rem;
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -13,12 +12,12 @@
     color: #222831;
     background-color: #ffd369;
     border-radius: 50%;
-    padding: 2rem;
+    padding-bottom: 0.5rem;
     transition: 1.2s;
     box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
     opacity: 0.9;
     p {
-        font-size: 1.1rem;
+        font-size: 1rem;
         font-weight: 800;
     }
     i {

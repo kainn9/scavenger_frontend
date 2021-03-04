@@ -185,5 +185,15 @@ body {
                 height: 150rem;
             }
         }
+
+        .search-bar {
+            margin-right: auto;
+            margin-left: 9%;
+            top: 10rem;
+            input {
+                width: 40rem;
+                height: 3.5rem;
+            }
+        }
     }
 }
