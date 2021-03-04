@@ -17,7 +17,7 @@ const Auth0ProviderWithHistory = ({ children }) => {
         <Auth0Provider
             domain={domain}
             clientId={clientId}
-            redirectUri={'https://scavenger-frontend.vercel.app/home'}
+            redirectUri={`${process.env.REACT_APP_FRLINK}`}
             //onRedirectCallback={onRedirectCallback}
         >
             {children}

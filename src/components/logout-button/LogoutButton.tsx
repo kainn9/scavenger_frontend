@@ -10,7 +10,7 @@ const LogoutButton: React.FC = () => {
             text="Logout"
             clickFN={() =>
                 logout({
-                    returnTo: 'https://scavenger-frontend.vercel.app/',
+                    returnTo: `${process.env.REACT_APP_FRLINK}`,
                 })
             }
         />
