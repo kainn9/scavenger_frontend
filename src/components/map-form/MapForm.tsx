@@ -152,6 +152,8 @@ const MapForm: React.FC<reduxProps> = function ({
 
             SET_ACTIVE_ROUTE(activeRoute.map((node) => Object.assign({}, node)));
             SET_ACTIVE_NODE(Object.assign({}, activeRoute[index]));
+            // close windows first( i think :) )
+            SET_INFO_WINDOW(null);
             SET_INFO_WINDOW(Object.assign({}, activeRoute[index]));
         }
 
