@@ -81,7 +81,7 @@ const DefaultMap = function ({ children, clMarkerEnabled, center, SET_MAP_CENTER
                 {clMarkerEnabled ? <CurrentLocationMarker /> : null}
                 {children}
             </GoogleMap>
-            <Search panTo={panTo} />
+            <Search panTo={panTo} SET_MAP_CENTER={SET_MAP_CENTER} />
             </div>
         </LoadScriptNext>
         
@@ -89,7 +89,7 @@ const DefaultMap = function ({ children, clMarkerEnabled, center, SET_MAP_CENTER
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const Search = ({ panTo }: { panTo: any }) => {
+const Search = ({ panTo, SET_MAP_CENTER }: { panTo: any; SET_MAP_CENTER: any; }) => {
     const {
       ready,
       value,
@@ -112,6 +112,7 @@ const Search = ({ panTo }: { panTo: any }) => {
             const results = await getGeocode({ address });
             const { lat, lng } = await getLatLng(results[0]);
             panTo({ lat, lng });
+            SET_MAP_CENTER({ lat, lng })
           } catch (err) {
             console.log('error!');
           }
