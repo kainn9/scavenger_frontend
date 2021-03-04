@@ -80,7 +80,7 @@ const CreatePage: React.FC<RouteComponentProps & reduxProps> = function ({
                 {renderRouteNodes()}
 
                 {activeRoute.length > 1 && showDirections ? <DirectionsComp /> : null}
-                <ToggleDirectionsBtn />
+                {activeRoute.length > 1 ? <ToggleDirectionsBtn /> : null}
             </DefaultMap>
             <MapForm />
             <MapUiBar>
