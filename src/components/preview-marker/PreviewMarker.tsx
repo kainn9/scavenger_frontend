@@ -79,6 +79,11 @@ const PreviewMarker: React.FC<Props> = function ({
         SET_ACTIVE_ROUTE(routeClone);
     };
 
+    const imgSrc = function () {
+        if (node && node.img && typeof node.img === 'string') return node.img;
+        if (node && node.img) return URL.createObjectURL(node.img);
+    };
+
     return node ? (
         <div className="test1">
             <Marker
@@ -109,12 +114,7 @@ const PreviewMarker: React.FC<Props> = function ({
                             <div className="if-image-container">
                                 {infoBox.img ? (
                                     <>
-                                        <img
-                                            className="preview-img"
-                                            src={
-                                                typeof node.img === 'string' ? node.img : URL.createObjectURL(node.img)
-                                            }
-                                        />
+                                        <img className="preview-img" src={imgSrc()} />
                                     </>
                                 ) : null}
                             </div>
