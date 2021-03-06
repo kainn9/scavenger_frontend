@@ -7,15 +7,16 @@ import LockPosBtn from '../../components/lock-pos-btn/LockPosBtn';
 import LogoutButton from '../../components/logout-button/LogoutButton';
 import MapUiBar from '../../components/map-ui-bar/MapBar';
 
+/**
+ * Component is home page for viewing routes made by other users
+ *
+ * @component
+
+ */
 const HomePage: React.FC<RouteComponentProps> = function ({ history }) {
     return (
         <>
-            <DefaultMap
-                // loadingElement={<div className="loading-element" />}
-                // containerElement={<div className="view-map" />}
-                // mapElement={<div className="map-element" />}
-                clMarkerEnabled
-            />
+            <DefaultMap clMarkerEnabled />
             <MapUiBar>
                 <LogoutButton />
                 <MapUiBtn iconName="user circle" text="Profile" />

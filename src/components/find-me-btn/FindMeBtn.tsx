@@ -8,6 +8,7 @@ import { Action, currentLocation } from '../../redux/current-location/currentLoc
 import { center } from '../../redux/map/mapReducer';
 import { SET_MAP_CENTER } from '../../redux/map/mapActions';
 
+// redux
 const mdp = (dispatch: (action: Action) => void) => ({
     PLACE_CL_MARKER: (cl: currentLocation) => dispatch(PLACE_CL_MARKER(cl)),
     SET_MAP_CENTER: (center: center) => dispatch(SET_MAP_CENTER(center)),
@@ -16,7 +17,19 @@ const mdp = (dispatch: (action: Action) => void) => ({
 const connector = connect(null, mdp);
 type reduxProps = ConnectedProps<typeof connector>;
 
+/**
+ * btn component, sets users currentLocation in redux
+ *
+ * @PLACE_CL_MARKER redux action, sets current location
+ * @SET_MAP_CENTER redux action, sets new center
+
+ */
 const FindMeBtn: React.FC<reduxProps> = function ({ PLACE_CL_MARKER, SET_MAP_CENTER }) {
+    /**
+    * function gets users current location, places marker, and re-renders map at marker
+    *
+
+    */
     const FindMe = () => {
         navigator.geolocation.getCurrentPosition(({ coords }) => {
             const formattedCords = { lat: coords.latitude, lng: coords.longitude };

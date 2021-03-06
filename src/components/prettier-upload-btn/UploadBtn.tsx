@@ -4,6 +4,7 @@ import { Action } from '../../redux/active-route/activeRouteReducer';
 import './UploadBtnStyles.scss';
 import { connect, ConnectedProps } from 'react-redux';
 
+// redux
 const mdp = (dispatch: (action: Action) => void) => ({
     SET_ACTIVE_IMAGE: (imgFile: File | null) => dispatch(SET_ACTIVE_IMAGE(imgFile)),
     SET_ERROR: (error: string | null) => dispatch(SET_ERROR(error)),
@@ -12,13 +13,19 @@ const mdp = (dispatch: (action: Action) => void) => ({
 const connector = connect(null, mdp);
 type reduxProps = ConnectedProps<typeof connector>;
 
+/**
+ * btn component, allows user to attach images to nodes in redux with file size/image dimension validations
+ * @SET_ACTIVE_IMAGE redux action, sets file as activeNode.img
+ * @SET_ERROR redux action, sets error message
+ * @children jsx intwn tags
+ */
 const UploadBtn: React.FC<reduxProps> = function ({ children, SET_ACTIVE_IMAGE, SET_ERROR }) {
     /**
      * validates upper/max limit for file size and image dimensions(2mb and 2500 by 2500 pixels currently)
-     * @param  file - fileObject, the image file that the use is trying to upload
-     *  @param  size - number, size restriction 1,048,576 === 1mb
-     *  @param  maxWidth - number, width restriction in pixels
-     *  @param  maxLength - number, length restriction in pixels
+     * @param file - fileObject, the image file that the use is trying to upload
+     *  @param size - number, size restriction 1,048,576 === 1mb
+     *  @param maxWidth - number, width restriction in pixels
+     *  @param maxLength - number, length restriction in pixels
      *  @returns boolean - true for valid : false for invalid
      * */
     const validateFile = async (file: File, size: number, maxWidth: number, maxLength: number) => {
@@ -47,6 +54,7 @@ const UploadBtn: React.FC<reduxProps> = function ({ children, SET_ACTIVE_IMAGE, 
             <input
                 type="file"
                 onChange={async ({ target: { files } }) => {
+                    // need to think of actual values to use for validation that works well for mobile
                     const validation = files ? await validateFile(files[0], 20971520000, 2500000, 250000) : null;
                     if (validation && files) SET_ACTIVE_IMAGE(files[0]);
                     else if (validation === null) {

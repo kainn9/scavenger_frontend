@@ -1,8 +1,6 @@
-/* eslint-disable prettier/prettier */
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import MapUiBtn from '../default-map-ui-btn/MapUiBtn';
 import './MapFormStyles.scss';
-import { Icon } from 'semantic-ui-react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Action, activeNode, activeRoute, ARRootState } from '../../redux/active-route/activeRouteReducer';
 import {
@@ -15,15 +13,16 @@ import {
     SET_ERROR,
     SET_PREP_STATE,
 } from '../../redux/active-route/activeRouteActions';
-import LineInput from '../line-input/LineInput';
-import UploadBtn from '../prettier-upload-btn/UploadBtn';
-import SpotifySearch from '../spotify-search/SpotifySearch';
+import BodyForm from './BodyForm';
+import ImageForm from './ImageForm';
+import SoundForm from './SoundForm';
 
+// redux
 const msp = ({ activeRoute }: { activeRoute: ARRootState }) => ({
-    prepNode: activeRoute.prepNode,
+    // prepNode: activeRoute.prepNode,
     activeNode: activeRoute.activeNode,
     activeRoute: activeRoute.activeRoute,
-    error: activeRoute.error,
+    // error: activeRoute.error,
 });
 
 const mdp = (dispatch: (action: Action) => void) => ({
@@ -39,33 +38,39 @@ const mdp = (dispatch: (action: Action) => void) => ({
 
 const connector = connect(msp, mdp);
 type reduxProps = ConnectedProps<typeof connector>;
-
+/**
+ * Component is form for creating scavenger node routes
+ * @props props come from redux(check msp/mdp)
+ */
 const MapForm: React.FC<reduxProps> = function ({
-    prepNode,
     activeNode,
     activeRoute,
-    error,
     SET_PREP_STATE,
-    SET_ACTIVE_TITLE,
     SET_ACTIVE_NODE,
     SET_ACTIVE_ROUTE,
-    SET_ACTIVE_IMAGE,
-    SET_ACTIVE_TEXT,
     FILTER_NODE,
     SET_ERROR,
-    
 }) {
     // local state to toggle btwn form's collapsed displays
     const [menuMode, setMenuMode] = useState('');
 
-
+    /**
+     * function updates prepstate in redux, this enables the onClick function on the googleMap so the user can create a node
+     * @reduxActions SET_PREP_STATE
+     */
     const addNodeClickHandler = () => {
         SET_PREP_STATE(true);
     };
+
+    /**
+     * function unselects current active node and reverts any changes or deletes it from render state if unsaved, also toggles prepstate to disables map OnClick
+     * @reduxActions SET_PREP_STATE, FILTER_NODE, SET_ACTIVE_NODE, SET_ACTIVE_ROUTE
+     */
     const cancelNodeClickHandler = () => {
         // clear prep state
         SET_PREP_STATE(false);
-        // null key === unsaved node
+
+        // null key === unsaved node, filtering unsaved nodes
         if (activeNode && activeNode.key === null) {
             FILTER_NODE(activeNode.key);
             //clear activeNode
@@ -73,6 +78,7 @@ const MapForm: React.FC<reduxProps> = function ({
             return;
         }
 
+        // if key is not null ie, if active node has been saved -> revert node back to old location
         if (activeNode) {
             // update coords of match in arr
             const routeClone = [...activeRoute];
@@ -81,65 +87,87 @@ const MapForm: React.FC<reduxProps> = function ({
                 if (rNode && activeNode) return rNode.key === activeNode.key;
             });
 
-            Object.assign(arrayNode, {lat: activeNode.lat, lng: activeNode.lng})
+            Object.assign(arrayNode, { lat: activeNode.lat, lng: activeNode.lng });
             SET_ACTIVE_ROUTE(routeClone);
             SET_ACTIVE_NODE(null);
         }
-
     };
+
+    /**
+     * function clears and removes currentActive node from its own state and activeRoute, also toggles prepstate to disables map OnClick
+     * @reduxActions SET_PREP_STATE, FILTER_NODE, SET_ACTIVE_NODE, SET_ACTIVE_ROUTE
+     */
     const deleteNodeHandler = () => {
         SET_PREP_STATE(false);
+
+        // deletes node from route based on key
         if (activeNode) {
             FILTER_NODE(activeNode.key);
             SET_ACTIVE_NODE(null);
         }
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    const inputHandler = ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
-        SET_ACTIVE_TITLE(value);
-    };
-    // const matchNode = (routes: activeRoute) => {
-    //     let match = null;
-    //     for (const node of routes) {
-    //         if (node && activeNode && node.key === activeNode.key) match = node;
-    //     }
-    //     return match;
-    // };
+    /**
+     * function matches active node to it's index inside activeRoute array
+     * @params activeRoute[]
+     * @returns index | null
+     */
     const matchNodeIndex = (routes: activeRoute) => {
         for (let i = 0; i < routes.length; i++) {
             const node = routes[i];
             if (node && activeNode && node.key === activeNode.key) return i;
         }
         return null;
-    }
+    };
+
+    /**
+     * function compares activeNode to its corrosponding object in activeRoute array to see if activeNode is edited
+     * @params activeRoute[]
+     * @returns true | false
+     */
     const isNodeEdited = (routes: activeRoute) => {
         let match = null;
         for (const node of routes) {
             if (node && activeNode && node.key === activeNode.key) match = node;
         }
         if (match && activeNode) {
-            if (match.text !== activeNode.text || match.title !== activeNode.title || match.lat !== activeNode.lat || match.lng !== activeNode.lng || match.img !== activeNode.img ||  match.soundMedia !== activeNode.soundMedia) return true;
+            if (
+                match.text !== activeNode.text ||
+                match.title !== activeNode.title ||
+                match.lat !== activeNode.lat ||
+                match.lng !== activeNode.lng ||
+                match.img !== activeNode.img ||
+                match.soundMedia !== activeNode.soundMedia
+            )
+                return true;
         }
-        
+
         return false;
     };
+
+    /**
+     * function saves activeNode/activeNode changes to its corrosponding reference in the activeRoute
+     */
     const addNodeToActiveRoute = () => {
+        // limit number of nodes(google free directions renderer max's on 8 markers)
         if (activeRoute.length > 7) {
             SET_ERROR('MAX NODE COUNT IS 8(SORRY, CANT AFFORD PREM GOOG MAPS LOL)');
-            setTimeout(() => SET_ERROR(null), 3000)
+            setTimeout(() => SET_ERROR(null), 3000);
             return;
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
+            // validates that node includes a title
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         } else if (activeNode!.title.length <= 0) {
             SET_ERROR('Node Title Required');
-            setTimeout(() => SET_ERROR(null), 3000)
+            setTimeout(() => SET_ERROR(null), 3000);
             return;
         }
-   
-        // ref to current render node
-        const index = matchNodeIndex(activeRoute);
-        let newNode = index || index === 0 ? activeRoute[index] : null;
 
+        // index of actniveNode in activeRoute
+        const index = matchNodeIndex(activeRoute);
+
+        // reference to the node inside Route
+        let newNode = index || index === 0 ? activeRoute[index] : null;
 
         // dont want to overwrite lat and lng in array because inverted state logic
         if (newNode && activeNode && (index || index === 0)) {
@@ -147,219 +175,65 @@ const MapForm: React.FC<reduxProps> = function ({
                 key: Date.now() + '',
                 lat: newNode.lat,
                 lng: newNode.lng,
-            })
-
+            });
+            // update the state
             SET_ACTIVE_ROUTE(activeRoute.map((node) => Object.assign({}, node)));
             SET_ACTIVE_NODE(Object.assign({}, activeRoute[index]));
         }
-
     };
-
-    useEffect(() => {
-        return SET_PREP_STATE(false);
-    }, []);
-
-    if (menuMode === 'main') return (
-            <form className="map-form" onSubmit={(e) => e.preventDefault()}>
-            <div className="mf-error">
-                {error ? <><p>{error}</p> <MapUiBtn iconName="window close" text="" bottomText clickFN={() => SET_ERROR(null)}/></> : null}
-            </div>
-            <div className="mf-active-container">
-                {activeNode ? (
-                    <div className="mf-active-node">
-                        <LineInput name="title" value={activeNode.title} inputHandler={inputHandler}>Enter Title</LineInput>
-                        <div className="text-body">
-                            <label className={true ? 'form-input-label' : 'label-shrink'}>Add Body</label>
-                            <textarea name="body-text" value={activeNode.text} onChange={({ target: { value } }) => SET_ACTIVE_TEXT(value)} />
-                        </div>
-                    </div>
-                ) : prepNode ? (
-                    <div className="mf-empty-pc">
-                        <p>CLICK MAP TO PLACE NODE</p>
-                        <Icon className="map pin" />
-                    </div>
-                ) : (
-                    <div className="mf-empty-pc">
-                        <p>NO NODES SELECTED</p>
-                        <Icon className="exclamation circle" />
-                    </div>
-                )}
-            </div>
-            {activeNode ? (
-                <div className="mf-btns-container">
-                    <MapUiBtn text="Unselect" iconName="window close" bottomText clickFN={cancelNodeClickHandler} />
-                    <MapUiBtn text="Menus" iconName="arrow alternate circle down" bottomText clickFN={() => setMenuMode('')} />
-                    <MapUiBtn
-                        text="Remove"
-                        iconName="window close"
-                        fontColor="red"
-                        bottomText
-                        clickFN={deleteNodeHandler}
-                    />
-                    {isNodeEdited(activeRoute) ? (
-                        <MapUiBtn text="Lock In" iconName="check circle" bottomText clickFN={addNodeToActiveRoute} />
-                    ) : null}
+    // body menu
+    if (menuMode === 'main')
+        return (
+            <BodyForm
+                setMenuMode={setMenuMode}
+                addNodeClickHandler={addNodeClickHandler}
+                cancelNodeClickHandler={cancelNodeClickHandler}
+                isNodeEdited={isNodeEdited}
+                addNodeToActiveRoute={addNodeToActiveRoute}
+                deleteNodeHandler={deleteNodeHandler}
+            />
+        );
+    // img menu
+    else if (menuMode === 'img')
+        return (
+            <ImageForm
+                setMenuMode={setMenuMode}
+                cancelNodeClickHandler={cancelNodeClickHandler}
+                isNodeEdited={isNodeEdited}
+                addNodeToActiveRoute={addNodeToActiveRoute}
+                addNodeClickHandler={addNodeClickHandler}
+            />
+        );
+    // music
+    else if (menuMode === 'music')
+        return (
+            <SoundForm
+                setMenuMode={setMenuMode}
+                cancelNodeClickHandler={cancelNodeClickHandler}
+                isNodeEdited={isNodeEdited}
+                addNodeToActiveRoute={addNodeToActiveRoute}
+                addNodeClickHandler={addNodeClickHandler}
+            />
+        );
+    // collapsed menu
+    else
+        return (
+            <>
+                <div className="map-form map-form-colap">
+                    <MapUiBtn iconName="arrow alternate circle up" text="" clickFN={() => setMenuMode('main')} />
+                    <p>Open Body Section</p>
                 </div>
-            ) : prepNode ? (
-                <div className="mf-btns-container">
-                    <MapUiBtn text="Unselect" iconName="window close" bottomText clickFN={cancelNodeClickHandler} />
+
+                <div className="map-form map-form-colap-middle">
+                    <MapUiBtn iconName="arrow alternate circle up" text="" clickFN={() => setMenuMode('img')} />
+                    <p>Open Image Section</p>
                 </div>
-            ) : (
-                <div className="mf-btns-container">
-                    <MapUiBtn iconName="arrow alternate circle down" text="Menus" bottomText  clickFN={() => setMenuMode('')} />
-                    <MapUiBtn text="Add Node" iconName="plus square" bottomText clickFN={addNodeClickHandler} />
+
+                <div className="map-form map-form-colap-right">
+                    <MapUiBtn iconName="arrow alternate circle up" text="" clickFN={() => setMenuMode('music')} />
+                    <p>Open Music Section</p>
                 </div>
-                
-            )}
-        </form>
-    )
-    else if (menuMode === "img") return (
-        <form className={`map-form ${activeNode && activeNode.img ? 'map-form-img' : ''}`} onSubmit={(e) => e.preventDefault()}>
-            {activeNode ? (
-                <>
-                    <div className="mf-error">
-                        {error ? (
-                            <>
-                                <p>{error}</p> 
-                                <MapUiBtn iconName="window close" text="" bottomText clickFN={() => SET_ERROR(null)} />
-                            </> 
-                        ) : null}
-                    </div>
-
-                    <div className="mf-active-container mf-active-img-mode">
-                        {activeNode && activeNode.img ? (
-                            <>
-                                <label>Image Preview</label>
-                                <img className="preview-img" src={typeof activeNode.img === 'string' ? activeNode.img : URL.createObjectURL(activeNode.img)}/> 
-                            </>
-                            ): null}
-
-                        {!activeNode.img ? (
-                            <UploadBtn>Attach Image To Node</UploadBtn> 
-                        ) : (
-                            <MapUiBtn iconName="window close" text="Clear" bottomText clickFN={() => SET_ACTIVE_IMAGE(null)}/>
-                        )}
-                    </div>
-
-                    <div className="mf-btns-container">
-                        <MapUiBtn text="Unselect" iconName="window close" bottomText clickFN={cancelNodeClickHandler} />
-                        <MapUiBtn iconName="arrow alternate circle down" text="Menus" bottomText  clickFN={() => setMenuMode('')} />
-                        {isNodeEdited(activeRoute) ? (
-                        <MapUiBtn text="Lock In" iconName="check circle" bottomText clickFN={addNodeToActiveRoute} />
-                    ) : null}
-                    </div>
-                </>
-            ) : (
-                <>
-                    <div className="mf-active-container ">
-                        <div className="mf-empty-pc">
-                            {!prepNode ? (
-                                <>
-                                    <p>NO NODES SELECTED</p>
-                                    <Icon className="exclamation circle" />
-                                </>
-                            ) : (
-                                <>
-                                    <p>CLICK MAP TO PLACE NODE</p>
-                                    <Icon className="map pin" />
-                                </>
-                            )}
-                        </div>
-                    </div>
-
-                    <div className="mf-btns-container">
-                        <MapUiBtn iconName="arrow alternate circle down" text="Menus" bottomText  clickFN={() => setMenuMode('')} />
-                        <MapUiBtn text="Add Node" iconName="plus square" bottomText clickFN={addNodeClickHandler} />
-                    </div>
-                </>
-            )}
-           
-        </form>
-    ); else if (menuMode === "music") return (
-        <form className={`map-form ${activeNode ? 'map-form-music' : ''}`} onSubmit={(e) => e.preventDefault()} >
-            {activeNode ? (
-                <>
-                    <div className="mf-error">
-                        {error ? (
-                            <>
-                                <p>{error}</p> 
-                                <MapUiBtn iconName="window close" text="" bottomText clickFN={() => SET_ERROR(null)} />
-                            </> 
-                        ) : null}
-                    </div>
-
-                    <div className="mf-active-container mf-active-music-mode">
-                        {/* {activeNode} */}
-                        <div className="mf-music-options">
-                            <p>Search Spotify</p>
-                            <p>Your Music</p>
-                        </div>
-                        <div className="mf-spotify-comp-container">
-                        {true ? (
-                            <SpotifySearch />
-                        ) : (
-                            //<SpotifyUserLib />
-                            null
-                        )}
-                        </div>
-                        
-                    </div>
-
-                    <div className="mf-btns-container">
-                        <MapUiBtn text="Unselect" iconName="window close" bottomText clickFN={cancelNodeClickHandler} />
-                        <MapUiBtn iconName="arrow alternate circle down" text="Menus" bottomText  clickFN={() => setMenuMode('')} />
-                        {isNodeEdited(activeRoute) ? (
-                        <MapUiBtn text="Lock In" iconName="check circle" bottomText clickFN={addNodeToActiveRoute} />
-                    ) : null}
-                    </div>
-                </>
-            ) : (
-                <>
-                    <div className="mf-active-container">
-                        <div className="mf-empty-pc">
-                            {!prepNode ? (
-                                <>
-                                    <p>NO NODES SELECTED</p>
-                                    <Icon className="exclamation circle" />
-                                </>
-                            ) : (
-                                <>
-                                    <p>CLICK MAP TO PLACE NODE</p>
-                                    <Icon className="map pin" />
-                                </>
-                            )}
-                        </div>
-                    </div>
-
-                    <div className="mf-btns-container">
-                        <MapUiBtn iconName="arrow alternate circle down" text="Menus" bottomText  clickFN={() => setMenuMode('')} />
-                        <MapUiBtn text="Add Node" iconName="plus square" bottomText clickFN={addNodeClickHandler} />
-                    </div>
-                </>
-            )}
-           
-        </form>
-    )
-    else return (
-    <>
-        <div className="map-form map-form-colap">
-            <MapUiBtn iconName="arrow alternate circle up" text="" clickFN={() => setMenuMode('main')} />
-            <p>Open Body Section</p>
-        </div>
-
-        <div className="map-form map-form-colap-middle">
-            <MapUiBtn iconName="arrow alternate circle up" text=""  clickFN={() => setMenuMode('img')}/>
-            <p>Open Image Section</p>
-        </div>
-
-        <div className="map-form map-form-colap-right">
-            <MapUiBtn iconName="arrow alternate circle up" text=""  clickFN={() => setMenuMode('music')}/>
-            <p>Open Music Section</p>
-        </div>
- 
-    </>
-    )
+            </>
+        );
 };
 export default connector(MapForm);
-
-

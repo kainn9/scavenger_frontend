@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { connect, ConnectedProps } from 'react-redux';
@@ -33,6 +32,12 @@ const mdp = (dispatch: (action: Action) => void) => ({
 const connector = connect(msp, mdp);
 type reduxProps = ConnectedProps<typeof connector>;
 
+/**
+ * Component is page for building node routes, props come from redux and withRouter ^above
+ *
+ * @component
+
+ */
 const CreatePage: React.FC<RouteComponentProps & reduxProps> = function ({
     history,
     prepNode,
@@ -42,6 +47,10 @@ const CreatePage: React.FC<RouteComponentProps & reduxProps> = function ({
     SET_ACTIVE_NODE,
     PUSH_TO_ACTIVE_ROUTE,
 }) {
+    /* 
+        if prepState is not active creates a node with null key(null key === unsaved node), adds it to current route, 
+        turns prepState back on 
+    */
     const addNode = (e: google.maps.MapMouseEvent | google.maps.IconMouseEvent) => {
         if (prepNode) {
             SET_PREP_STATE(false);
@@ -59,7 +68,10 @@ const CreatePage: React.FC<RouteComponentProps & reduxProps> = function ({
             SET_ACTIVE_NODE({ ...newNode });
         }
     };
-
+    /**
+     * function renders array of google maps markers/nodes based on activeRoute-state[]
+     * @returns  jsx PreviewMarker[]
+     */
     const renderRouteNodes = () => {
         return activeRoute.map((node) => {
             if (node) {
@@ -70,19 +82,24 @@ const CreatePage: React.FC<RouteComponentProps & reduxProps> = function ({
 
     return (
         <>
-            <DefaultMap
-                // loadingElement={<div className="loading-element" />}
-                // containerElement={<div className="view-map" />}
-                // mapElement={<div className="map-element" />}
-                clMarkerEnabled
-                onMapClick={addNode}
-            >
-                {renderRouteNodes()}
+            {/* Scavengers defauly google map */}
+            <DefaultMap clMarkerEnabled onMapClick={addNode}>
+                {renderRouteNodes() /* renders nods */}
 
-                {activeRoute.length > 1 && showDirections ? <DirectionsComp /> : null}
-                {activeRoute.length > 1 ? <ToggleDirectionsBtn /> : null}
+                {
+                    /* connects nodes if more than 1 node exists and use has toggled directions on */
+                    activeRoute.length > 1 && showDirections ? <DirectionsComp /> : null
+                }
+                {
+                    /* toggles node directions/connection lines */
+                    activeRoute.length > 1 ? <ToggleDirectionsBtn /> : null
+                }
             </DefaultMap>
+
+            {/* form for creating nodes */}
             <MapForm />
+
+            {/* main navbar -> renders children buttons */}
             <MapUiBar>
                 <LogoutButton />
                 <MapUiBtn iconName="user circle" text="Profile" />
