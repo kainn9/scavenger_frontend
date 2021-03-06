@@ -13,17 +13,15 @@ interface Props {
 
 */
 const SpotPlayerLoader: React.FC<Props> = function ({ uri, customWidth }) {
-    // music player sometimes breaks if a song is the first format provided so the
+    // state for tracking when to show loader
     const [isMounted, setIsMounted] = useState<boolean>(false);
-    const [uriSwap, setUriSwap] = useState<string>('spotify:album:27ftYHLeunzcSzb33Wk1hf');
     useEffect(() => {
         setIsMounted(true);
-        setUriSwap(uri);
-        console.log(uriSwap);
     }, []);
+
     return isMounted ? (
         <SpotifyPlayer
-            uri={uriSwap}
+            uri={uri /*uriSwap */}
             size={{
                 width: customWidth || '230rem',
                 height: uri.slice(8, 13) === 'track' ? '85rem' : '153rem',

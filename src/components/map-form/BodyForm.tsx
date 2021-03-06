@@ -29,6 +29,23 @@ interface Props extends ReduxProps {
     addNodeToActiveRoute: () => void;
     deleteNodeHandler: () => void;
 }
+/**
+ * mapform sub componnet/form for title/body text
+ * @param props.setMenuMode function sets value for menuMode(mapform local state that determines which subform to display)
+ * @param props.addNodeClickHandler function(onClick for addNode) updates prepstate in redux, this enables the onClick function on the googleMap so the user can create a node
+ * @param props.cancelNodeClickHandler function unselects current active node and reverts any changes or deletes it from render state if unsaved, also toggles prepstate to disables map OnClick
+ * @param props.isNodeEdited function compares activeNode to its corrosponding object in activeRoute array to see if activeNode is edited
+ * @param props.addNodeToActiveRoute function saves activeNode/activeNode changes to its corrosponding reference in the activeRoute
+ * @param props.deleteNodeHandler function clears and removes currentActive node from its own state and activeRoute, also toggles prepstate to disables map OnClick
+ * @prepNode redux state, prepNode -> true: mapOnClick enabled, fale: mapOnClick disabled
+ * @activeNode redux state, current node selected
+ * @activeRoute redux state, current activeRoute
+ * @error redux state, error message/string
+ * @SET_ACTIVE_TITLE redux action, updates/sets current activeNode.title
+ * @SET_ACTIVE_TEXT redux action, updates/sets current activeNode.text
+ * @SET_ERROR redux action, sets error string/message in redux
+ * @error redux action, sets error string/message in redux
+ */
 const BodyForm: React.FC<Props> = function ({
     // redux state
     prepNode,

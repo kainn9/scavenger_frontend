@@ -9,8 +9,7 @@ import MapUiBar from '../../components/map-ui-bar/MapBar';
 
 /**
  * Component is home page for viewing routes made by other users
- *
- * @component
+ * @history history prop from withRouter
 
  */
 const HomePage: React.FC<RouteComponentProps> = function ({ history }) {

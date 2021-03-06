@@ -39,8 +39,14 @@ const mdp = (dispatch: (action: Action) => void) => ({
 const connector = connect(msp, mdp);
 type reduxProps = ConnectedProps<typeof connector>;
 /**
- * Component is form for creating scavenger node routes
- * @props props come from redux(check msp/mdp)
+ * Component is form for creating/editing scavenger node routes
+ * @activeNode redux state, current node being edited
+ * @activeRoute redux state, current route being edited
+ * @SET_PREP_STATE redux action, toggles prepState(prepNode) -> true: mapOnClick enabled, fale: mapOnClick disabled
+ * @SET_ACTIVE_NODE redux action, sets activeNode in redux
+ * @SET_ACTIVE_ROUTE redux action, sets/updates activeRoute
+ * @FILTER_NODE redux action, deletes node  from activeRoute via key param matched to node property
+ * @SET_ERROR redux action, sets error string/message in redux
  */
 const MapForm: React.FC<reduxProps> = function ({
     activeNode,
@@ -55,7 +61,7 @@ const MapForm: React.FC<reduxProps> = function ({
     const [menuMode, setMenuMode] = useState('');
 
     /**
-     * function updates prepstate in redux, this enables the onClick function on the googleMap so the user can create a node
+     * function(onClick for addNode) updates prepstate in redux, this enables the onClick function on the googleMap so the user can create a node
      * @reduxActions SET_PREP_STATE
      */
     const addNodeClickHandler = () => {

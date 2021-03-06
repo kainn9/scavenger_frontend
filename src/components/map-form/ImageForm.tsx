@@ -21,7 +21,20 @@ const mdp = (dispatch: (action: Action) => void) => ({
 
 const connector = connect(msp, mdp);
 type ReduxProps = ConnectedProps<typeof connector>;
-
+/**
+ * mapForm subcomponent is form for setting img value
+ * @param props.setMenuMode function sets value for menuMode(mapform local state that determines which subform to display)
+ * @param props.addNodeClickHandler function(onClick for addNode) updates prepstate in redux, this enables the onClick function on the googleMap so the user can create a node
+ * @param props.cancelNodeClickHandler function unselects current active node and reverts any changes or deletes it from render state if unsaved, also toggles prepstate to disables map OnClick
+ * @param props.isNodeEdited function compares activeNode to its corrosponding object in activeRoute array to see if activeNode is edited
+ * @param props.addNodeToActiveRoute function saves activeNode/activeNode changes to its corrosponding reference in the activeRoute
+ * @prepNode redux state, prepNode -> true: mapOnClick enabled, fale: mapOnClick disabled
+ * @activeNode redux state, current node selected
+ * @activeRoute redux state, current activeRoute
+ * @error error message/string
+ * @SET_ACTIVE_IMAGE redux action, updates/sets current activeNode.text
+ * @SET_ERROR redux action, sets error string/message in redux
+ */
 interface Props extends ReduxProps {
     setMenuMode: (s: string) => void;
     cancelNodeClickHandler: () => void;

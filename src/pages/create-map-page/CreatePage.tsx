@@ -16,6 +16,7 @@ import ToggleDirectionsBtn from '../../components/toggle-directions-btn/ToggleDi
 import DirectionsComp from '../../components/directions/DirectionsComp';
 import { MRootState } from '../../redux/map/mapReducer';
 
+// redux
 const msp = ({ activeRoute, map }: { activeRoute: ARRootState; map: MRootState }) => ({
     prepNode: activeRoute.prepNode,
     activeNode: activeRoute.activeNode,
@@ -33,9 +34,14 @@ const connector = connect(msp, mdp);
 type reduxProps = ConnectedProps<typeof connector>;
 
 /**
- * Component is page for building node routes, props come from redux and withRouter ^above
- *
- * @component
+ * Page, for building node routes, props come from redux and withRouter
+ * @history history prop injected from withRouter
+ * @prepNode redux state(bool), true = map onClick enabled, false = map onClick disabled
+ * @activeRoute redux state(activeNode[]), is the current route being edited
+ * @showDirections redux state(bool), toggles node connections in activeRoute
+ * @SET_PREP_STATE redux action, toggles prepState(prepNode) -> true: mapOnClick enabled, fale: mapOnClick disabled
+ * @SET_ACTIVE_NODE redux action , sets activeNode in redux
+ * @PUSH_TO_ACTIVE_ROUTE adds a node to end of activeRoute and sets as new activeNode(will be unsaved/have no key) until locked in.
 
  */
 const CreatePage: React.FC<RouteComponentProps & reduxProps> = function ({
@@ -83,7 +89,7 @@ const CreatePage: React.FC<RouteComponentProps & reduxProps> = function ({
     return (
         <>
             {/* Scavengers defauly google map */}
-            <DefaultMap clMarkerEnabled onMapClick={addNode}>
+            <DefaultMap clMarkerEnabled minZoom={2} onMapClick={addNode}>
                 {renderRouteNodes() /* renders nods */}
 
                 {

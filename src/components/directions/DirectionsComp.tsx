@@ -21,7 +21,7 @@ type ReduxProps = ConnectedProps<typeof connector>;
 
  */
 const DirectionsComp: React.FC<ReduxProps> = function ({ activeRoute }) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // state to save directionService resp
     const [directionsResp, setDirectionsResp] = useState<any>(null);
 
     /**
