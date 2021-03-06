@@ -19,6 +19,7 @@ const SpotPlayerLoader: React.FC<Props> = function ({ uri, customWidth }) {
     useEffect(() => {
         setIsMounted(true);
         setUriSwap(uri);
+        console.log(uriSwap);
     }, []);
     return isMounted ? (
         <SpotifyPlayer
