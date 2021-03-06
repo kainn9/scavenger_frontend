@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/directions/DirectionsComp.tsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/directions/DirectionsComp.tsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+import React, { useState } from 'react';
+import { DirectionsRenderer, DirectionsService } from '@react-google-maps/api';
+import { connect, ConnectedProps } from 'react-redux';
+import { activeNode, activeRoute, ARRootState } from '../../redux/active-route/activeRouteReducer';
+
+// redux
+const msp = ({ activeRoute }: { activeRoute: ARRootState }) => ({
+    activeRoute: activeRoute.activeRoute,
+});
+
+const connector = connect(msp);
+
+type ReduxProps = ConnectedProps&lt;typeof connector>;
+
+/**
+ * google map child component, will connect the activeRoute nodes together
+ *
+ * @activeRoute activeRoute in redux store
+
+ */
+const DirectionsComp: React.FC&lt;ReduxProps> = function ({ activeRoute }) {
+    // state to save directionService resp
+    const [directionsResp, setDirectionsResp] = useState&lt;any>(null);
+
+    /**
+    * function gets lat/lng from a node in activeRoute and converts it  to google.maps.LatLng that can be passed as a DirectionService prop
+    *
+    * @param index index of node to get lat/lng from
+    * @returns google.maps.LatLng
+
+    */
+    const getLatLng = function (index: number) {
+        if (index >= 0) {
+            const lat = activeRoute[index]!.lat;
+            const lng = activeRoute[index]!.lng;
+            return new google.maps.LatLng({ lat: lat, lng: lng });
+        }
+    };
+
+    /**
+    * function converts nodes from activeRoute (excluding head and tail of route) into google.maps.LatLng[] for DirectionService waypoint prop
+    *
+    * @param index index of node to get lat/lng from
+    * @returns google.maps.LatLng[]
+
+    */
+    const getWaypoints = function (ar: activeRoute) {
+        return ar.slice(1, activeRoute.length - 1).map((node: activeNode) => {
+            return {
+                location: new google.maps.LatLng(node!.lat, node!.lng),
+            };
+        });
+    };
+
+    /**
+    * callback function sets DirectionsRenderer resp into state
+    *
+    * @param response google maps direction service resp, used by DirectionsRenderer to connect nodes
+
+    */
+    const directionsCallback = function (response: any) {
+        //console.log(response);
+        if (response !== null) {
+            if (response.status === 'OK') {
+                setDirectionsResp(response);
+            } else {
+                //console.log('response: ', response);
+            }
+        }
+    };
+
+    return (
+        &lt;>
+            &lt;DirectionsService
+                // required
+                options={{
+                    destination: getLatLng(activeRoute.length - 1),
+                    origin: getLatLng(0),
+                    waypoints: getWaypoints(activeRoute),
+                    travelMode: google.maps.TravelMode.WALKING,
+                }}
+                // required
+                callback={directionsCallback}
+            />
+
+            {directionsResp ? (
+                &lt;DirectionsRenderer
+                    // required
+                    options={{
+                        directions: directionsResp,
+                        suppressMarkers: true,
+                    }}
+                />
+            ) : null}
+        &lt;/>
+    );
+};
+export default connector(DirectionsComp);
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AuthPage">AuthPage</a></li><li><a href="global.html#BodyForm">BodyForm</a></li><li><a href="global.html#CreatePage">CreatePage</a></li><li><a href="global.html#CurrentLocationMarker">CurrentLocationMarker</a></li><li><a href="global.html#DefaultMap">DefaultMap</a></li><li><a href="global.html#DirectionsComp">DirectionsComp</a></li><li><a href="global.html#FILTER_NODE">FILTER_NODE</a></li><li><a href="global.html#FindMeBtn">FindMeBtn</a></li><li><a href="global.html#HomePage">HomePage</a></li><li><a href="global.html#LineInput">LineInput</a></li><li><a href="global.html#LockPosBtn">LockPosBtn</a></li><li><a href="global.html#LoginButton">LoginButton</a></li><li><a href="global.html#LogoutButton">LogoutButton</a></li><li><a href="global.html#MapForm">MapForm</a></li><li><a href="global.html#MapUiBar">MapUiBar</a></li><li><a href="global.html#MapUiBtn">MapUiBtn</a></li><li><a href="global.html#PLACE_CL_MARKER">PLACE_CL_MARKER</a></li><li><a href="global.html#PreviewMarker">PreviewMarker</a></li><li><a href="global.html#PUSH_TO_ACTIVE_ROUTE">PUSH_TO_ACTIVE_ROUTE</a></li><li><a href="global.html#SET_ACTIVE_IMAGE">SET_ACTIVE_IMAGE</a></li><li><a href="global.html#SET_ACTIVE_NODE">SET_ACTIVE_NODE</a></li><li><a href="global.html#SET_ACTIVE_ROUTE">SET_ACTIVE_ROUTE</a></li><li><a href="global.html#SET_ACTIVE_SOUND">SET_ACTIVE_SOUND</a></li><li><a href="global.html#SET_ACTIVE_TEXT">SET_ACTIVE_TEXT</a></li><li><a href="global.html#SET_ACTIVE_TITLE">SET_ACTIVE_TITLE</a></li><li><a href="global.html#SET_ERROR">SET_ERROR</a></li><li><a href="global.html#SET_MAP_CENTER">SET_MAP_CENTER</a></li><li><a href="global.html#SET_PREP_STATE">SET_PREP_STATE</a></li><li><a href="global.html#SoundForm">SoundForm</a></li><li><a href="global.html#SpotifySearch">SpotifySearch</a></li><li><a href="global.html#SpotPlayerLoader">SpotPlayerLoader</a></li><li><a href="global.html#TOGGLE_DIRECTIONS">TOGGLE_DIRECTIONS</a></li><li><a href="global.html#TOGGLE_IS_LOCKED">TOGGLE_IS_LOCKED</a></li><li><a href="global.html#ToggleDirectionsBtn">ToggleDirectionsBtn</a></li><li><a href="global.html#TrackSearchPreview">TrackSearchPreview</a></li><li><a href="global.html#UploadBtn">UploadBtn</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Sat Mar 06 2021 14:45:25 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

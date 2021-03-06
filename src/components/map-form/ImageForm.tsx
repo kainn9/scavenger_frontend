@@ -35,6 +35,7 @@ type ReduxProps = ConnectedProps<typeof connector>;
  * @SET_ACTIVE_IMAGE redux action, updates/sets current activeNode.text
  * @SET_ERROR redux action, sets error string/message in redux
  */
+
 interface Props extends ReduxProps {
     setMenuMode: (s: string) => void;
     cancelNodeClickHandler: () => void;

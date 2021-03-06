@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/prettier-upload-btn/UploadBtn.tsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/prettier-upload-btn/UploadBtn.tsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React from 'react';
+import { SET_ACTIVE_IMAGE, SET_ERROR } from '../../redux/active-route/activeRouteActions';
+import { Action } from '../../redux/active-route/activeRouteReducer';
+import './UploadBtnStyles.scss';
+import { connect, ConnectedProps } from 'react-redux';
+
+// redux
+const mdp = (dispatch: (action: Action) => void) => ({
+    SET_ACTIVE_IMAGE: (imgFile: File | null) => dispatch(SET_ACTIVE_IMAGE(imgFile)),
+    SET_ERROR: (error: string | null) => dispatch(SET_ERROR(error)),
+});
+
+const connector = connect(null, mdp);
+type reduxProps = ConnectedProps&lt;typeof connector>;
+
+/**
+ * btn component, allows user to attach images to nodes in redux with file size/image dimension validations
+ * @SET_ACTIVE_IMAGE redux action, sets file as activeNode.img
+ * @SET_ERROR redux action, sets error message
+ * @children jsx intwn tags
+ */
+const UploadBtn: React.FC&lt;reduxProps> = function ({ children, SET_ACTIVE_IMAGE, SET_ERROR }) {
+    /**
+     * validates upper/max limit for file size and image dimensions(2mb and 2500 by 2500 pixels currently)
+     * @param file - fileObject, the image file that the use is trying to upload
+     *  @param size - number, size restriction 1,048,576 === 1mb
+     *  @param maxWidth - number, width restriction in pixels
+     *  @param maxLength - number, length restriction in pixels
+     *  @returns boolean - true for valid : false for invalid
+     * */
+    const validateFile = async (file: File, size: number, maxWidth: number, maxLength: number) => {
+        // 2mb restriction
+        if (file) {
+            if (file.size >= size) {
+                return false;
+            }
+
+            // promise to wait for image height and length to resolve for validation
+            const imagePromise: Promise&lt;boolean> = new Promise((resolve) => {
+                const testImg = new Image();
+                testImg.src = URL.createObjectURL(file);
+                testImg.onload = () => {
+                    if (testImg.height > maxLength || testImg.width > maxWidth) resolve(false);
+                    else resolve(true);
+                };
+            });
+            const isDimensionsValid: boolean | Promise&lt;boolean> = await imagePromise;
+            return isDimensionsValid;
+        }
+        return null;
+    };
+    return (
+        &lt;label className="custom-file-upload">
+            &lt;input
+                type="file"
+                onChange={async ({ target: { files } }) => {
+                    // need to think of actual values to use for validation that works well for mobile
+                    const validation = files ? await validateFile(files[0], 20971520000, 2500000, 250000) : null;
+                    if (validation &amp;&amp; files) SET_ACTIVE_IMAGE(files[0]);
+                    else if (validation === null) {
+                        SET_ERROR('Error, cannot set empty image');
+                    } else {
+                        SET_ERROR('Error, Image must be smaller than 2mb and less than 2500x 2500px');
+                    }
+                    setTimeout(() => SET_ERROR(null), 7000);
+                }}
+            />
+            {children}
+        &lt;/label>
+    );
+};
+
+export default connector(UploadBtn);
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AuthPage">AuthPage</a></li><li><a href="global.html#BodyForm">BodyForm</a></li><li><a href="global.html#CreatePage">CreatePage</a></li><li><a href="global.html#CurrentLocationMarker">CurrentLocationMarker</a></li><li><a href="global.html#DefaultMap">DefaultMap</a></li><li><a href="global.html#DirectionsComp">DirectionsComp</a></li><li><a href="global.html#FILTER_NODE">FILTER_NODE</a></li><li><a href="global.html#FindMeBtn">FindMeBtn</a></li><li><a href="global.html#HomePage">HomePage</a></li><li><a href="global.html#LineInput">LineInput</a></li><li><a href="global.html#LockPosBtn">LockPosBtn</a></li><li><a href="global.html#LoginButton">LoginButton</a></li><li><a href="global.html#LogoutButton">LogoutButton</a></li><li><a href="global.html#MapForm">MapForm</a></li><li><a href="global.html#MapUiBar">MapUiBar</a></li><li><a href="global.html#MapUiBtn">MapUiBtn</a></li><li><a href="global.html#PLACE_CL_MARKER">PLACE_CL_MARKER</a></li><li><a href="global.html#PreviewMarker">PreviewMarker</a></li><li><a href="global.html#PUSH_TO_ACTIVE_ROUTE">PUSH_TO_ACTIVE_ROUTE</a></li><li><a href="global.html#SET_ACTIVE_IMAGE">SET_ACTIVE_IMAGE</a></li><li><a href="global.html#SET_ACTIVE_NODE">SET_ACTIVE_NODE</a></li><li><a href="global.html#SET_ACTIVE_ROUTE">SET_ACTIVE_ROUTE</a></li><li><a href="global.html#SET_ACTIVE_SOUND">SET_ACTIVE_SOUND</a></li><li><a href="global.html#SET_ACTIVE_TEXT">SET_ACTIVE_TEXT</a></li><li><a href="global.html#SET_ACTIVE_TITLE">SET_ACTIVE_TITLE</a></li><li><a href="global.html#SET_ERROR">SET_ERROR</a></li><li><a href="global.html#SET_MAP_CENTER">SET_MAP_CENTER</a></li><li><a href="global.html#SET_PREP_STATE">SET_PREP_STATE</a></li><li><a href="global.html#SoundForm">SoundForm</a></li><li><a href="global.html#SpotifySearch">SpotifySearch</a></li><li><a href="global.html#SpotPlayerLoader">SpotPlayerLoader</a></li><li><a href="global.html#TOGGLE_DIRECTIONS">TOGGLE_DIRECTIONS</a></li><li><a href="global.html#TOGGLE_IS_LOCKED">TOGGLE_IS_LOCKED</a></li><li><a href="global.html#ToggleDirectionsBtn">ToggleDirectionsBtn</a></li><li><a href="global.html#TrackSearchPreview">TrackSearchPreview</a></li><li><a href="global.html#UploadBtn">UploadBtn</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Sat Mar 06 2021 14:45:25 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

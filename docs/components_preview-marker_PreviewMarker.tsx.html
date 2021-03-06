@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/preview-marker/PreviewMarker.tsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/preview-marker/PreviewMarker.tsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState, useEffect } from 'react';
+import { InfoWindow, Marker } from '@react-google-maps/api';
+import { Action, activeNode, activeRoute, ARRootState } from '../../redux/active-route/activeRouteReducer';
+import './PreviewMarkerStyles.scss';
+import signPostIcon from '../../assets/sign-post-icon.png';
+import { SET_ACTIVE_NODE, SET_ACTIVE_ROUTE } from '../../redux/active-route/activeRouteActions';
+import { connect, ConnectedProps } from 'react-redux';
+import SpotPlayerLoader from '../spot-player-w-loader/SpotPlayerLoader';
+
+// redux
+const msp = ({ activeRoute }: { activeRoute: ARRootState }) => ({
+    activeRoute: activeRoute.activeRoute,
+    activeNode: activeRoute.activeNode,
+});
+
+const mdp = (dispatch: (action: Action) => void) => ({
+    SET_ACTIVE_NODE: (node: activeNode | null) => dispatch(SET_ACTIVE_NODE(node)),
+    SET_ACTIVE_ROUTE: (route: activeRoute | null) => dispatch(SET_ACTIVE_ROUTE(route)),
+});
+
+const connector = connect(msp, mdp);
+type reduxProps = ConnectedProps&lt;typeof connector>;
+
+interface Props extends reduxProps {
+    node: activeNode;
+}
+
+/**
+ * google maps child component, renders activeRoute and stores data to be rendered by InfoView/ edit-form OnClicked
+ * @param props.node current node data for the marker to render
+ * @activeNode currentNode in redux
+ * @activeRoute activeNode[], current route being saved/edited
+ * @SET_ACTIVE_NODE redux action, sets activeNode redux(used for selection)
+ * @SET_ACTIVE_ROUTE redux action, sets activeRoute in redux(used to rerender route upon saved edits)
+
+ */
+const PreviewMarker: React.FC&lt;Props> = function ({ node, activeNode, activeRoute, SET_ACTIVE_NODE, SET_ACTIVE_ROUTE }) {
+    /**
+    * function reverts lat/lng of activeNode's corrosponding object(inside activeRoute)
+    * @param props.route current node data for the marker to render
+
+
+    */
+    const revertOldNodePosOnSwitch = (route: activeRoute) => {
+        if (activeNode) {
+            const index = route.findIndex((n) => {
+                if (n &amp;&amp; activeNode) return n.key === activeNode.key;
+            });
+            if (index !== -1) {
+                Object.assign(route[index], {
+                    lat: activeNode.lat,
+                    lng: activeNode.lng,
+                });
+
+                SET_ACTIVE_ROUTE(activeRoute.map((n) => Object.assign({}, n)));
+            }
+        }
+    };
+    /**
+    * function first reverts postion of current activeNode(if pos is edited &amp;&amp; unsaved) sets current marker data as activeNode, and opens the infoView
+
+    */
+    const clickHandler = () => {
+        // if active node key matches node key -or- no activeNode
+        if ((activeNode &amp;&amp; node &amp;&amp; activeNode.key !== node.key) || (node &amp;&amp; !activeNode)) {
+            revertOldNodePosOnSwitch([...activeRoute]);
+            SET_ACTIVE_NODE({ ...node });
+        }
+        toggleIFV((ps) => !ps);
+    };
+    /**
+    * function first reverts postion of current activeNode(if pos is edited &amp;&amp; unsaved) sets current marker data as activeNode, opens the infoView, and updates the corrosponding nodes lat/lng inside activeRoute based on dragend pos
+
+    */
+    const updateActiveNodeOnDrag = ({
+        latLng: { lng, lat },
+    }: google.maps.MapMouseEvent | google.maps.IconMouseEvent) => {
+        const routeClone = [...activeRoute];
+
+        const arrayNode = routeClone.find((rNode) => {
+            if (rNode &amp;&amp; node) return rNode.key === node.key;
+        });
+
+        if ((activeNode &amp;&amp; node &amp;&amp; arrayNode &amp;&amp; activeNode.key !== node.key) || (arrayNode &amp;&amp; !activeNode)) {
+            revertOldNodePosOnSwitch(routeClone);
+            SET_ACTIVE_NODE({ ...arrayNode });
+        }
+        Object.assign(arrayNode, { lat: lat(), lng: lng() });
+        SET_ACTIVE_ROUTE(routeClone);
+        toggleIFV(true);
+    };
+    /**
+    * function checks if markers img Data is a url or file, and either returns the url or the file converted into a url
+    * @returns url for image
+    
+    */
+    const imgSrc = function () {
+        if (node &amp;&amp; node.img &amp;&amp; typeof node.img === 'string') return node.img;
+        if (node &amp;&amp; node.img) return URL.createObjectURL(node.img);
+    };
+    // boolean, toggles if infoView window should be rendered for the marker
+    const [IFV, toggleIFV] = useState&lt;boolean>(false);
+    // open infoview when marker mounts
+    useEffect(() => {
+        if (node &amp;&amp; node.title) toggleIFV(true);
+    }, []);
+
+    return node ? (
+        &lt;div className="test1">
+            &lt;Marker
+                draggable
+                label={node.title}
+                position={{ lat: node.lat, lng: node.lng }}
+                icon={{
+                    url: signPostIcon,
+                    scaledSize: new window.google.maps.Size(40, 40),
+                    origin: new window.google.maps.Point(0, 0),
+                    labelOrigin: new window.google.maps.Point(20, 47),
+                }}
+                onClick={clickHandler}
+                onDragEnd={updateActiveNodeOnDrag}
+            >&lt;/Marker>
+            {IFV ? (
+                &lt;InfoWindow
+                    position={{ lat: node.lat, lng: node.lng }}
+                    onCloseClick={() => {
+                        toggleIFV((ps) => !ps);
+                    }}
+                >
+                    &lt;div className="info-window-inner">
+                        &lt;div className="if-overflow">
+                            &lt;h1>{node.title}&lt;/h1>
+                            &lt;p>{node.text}&lt;/p>
+                            &lt;div className="if-image-container">
+                                {node.img ? (
+                                    &lt;>
+                                        &lt;img className="preview-img" src={imgSrc()} />
+                                    &lt;/>
+                                ) : null}
+                            &lt;/div>
+                            &lt;div className="if-music-container">
+                                {node.soundMedia ? &lt;SpotPlayerLoader uri={node.soundMedia} customWidth="90%" /> : null}
+                            &lt;/div>
+                        &lt;/div>
+                    &lt;/div>
+                &lt;/InfoWindow>
+            ) : null}
+        &lt;/div>
+    ) : null;
+};
+export default connector(PreviewMarker);
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AuthPage">AuthPage</a></li><li><a href="global.html#BodyForm">BodyForm</a></li><li><a href="global.html#CreatePage">CreatePage</a></li><li><a href="global.html#CurrentLocationMarker">CurrentLocationMarker</a></li><li><a href="global.html#DefaultMap">DefaultMap</a></li><li><a href="global.html#DirectionsComp">DirectionsComp</a></li><li><a href="global.html#FILTER_NODE">FILTER_NODE</a></li><li><a href="global.html#FindMeBtn">FindMeBtn</a></li><li><a href="global.html#HomePage">HomePage</a></li><li><a href="global.html#LineInput">LineInput</a></li><li><a href="global.html#LockPosBtn">LockPosBtn</a></li><li><a href="global.html#LoginButton">LoginButton</a></li><li><a href="global.html#LogoutButton">LogoutButton</a></li><li><a href="global.html#MapForm">MapForm</a></li><li><a href="global.html#MapUiBar">MapUiBar</a></li><li><a href="global.html#MapUiBtn">MapUiBtn</a></li><li><a href="global.html#PLACE_CL_MARKER">PLACE_CL_MARKER</a></li><li><a href="global.html#PreviewMarker">PreviewMarker</a></li><li><a href="global.html#PUSH_TO_ACTIVE_ROUTE">PUSH_TO_ACTIVE_ROUTE</a></li><li><a href="global.html#SET_ACTIVE_IMAGE">SET_ACTIVE_IMAGE</a></li><li><a href="global.html#SET_ACTIVE_NODE">SET_ACTIVE_NODE</a></li><li><a href="global.html#SET_ACTIVE_ROUTE">SET_ACTIVE_ROUTE</a></li><li><a href="global.html#SET_ACTIVE_SOUND">SET_ACTIVE_SOUND</a></li><li><a href="global.html#SET_ACTIVE_TEXT">SET_ACTIVE_TEXT</a></li><li><a href="global.html#SET_ACTIVE_TITLE">SET_ACTIVE_TITLE</a></li><li><a href="global.html#SET_ERROR">SET_ERROR</a></li><li><a href="global.html#SET_MAP_CENTER">SET_MAP_CENTER</a></li><li><a href="global.html#SET_PREP_STATE">SET_PREP_STATE</a></li><li><a href="global.html#SoundForm">SoundForm</a></li><li><a href="global.html#SpotifySearch">SpotifySearch</a></li><li><a href="global.html#SpotPlayerLoader">SpotPlayerLoader</a></li><li><a href="global.html#TOGGLE_DIRECTIONS">TOGGLE_DIRECTIONS</a></li><li><a href="global.html#TOGGLE_IS_LOCKED">TOGGLE_IS_LOCKED</a></li><li><a href="global.html#ToggleDirectionsBtn">ToggleDirectionsBtn</a></li><li><a href="global.html#TrackSearchPreview">TrackSearchPreview</a></li><li><a href="global.html#UploadBtn">UploadBtn</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Sat Mar 06 2021 14:45:25 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

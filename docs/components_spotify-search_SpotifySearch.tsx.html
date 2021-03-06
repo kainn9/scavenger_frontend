@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/spotify-search/SpotifySearch.tsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/spotify-search/SpotifySearch.tsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState } from 'react';
+import { Icon } from 'semantic-ui-react';
+import './SpotifySearchStyles.scss';
+import { useAuth0 } from '@auth0/auth0-react';
+import SpotifySearchPreview from '../spotify-search-preview/SpotifySearchPreview';
+import { Action, ARRootState } from '../../redux/active-route/activeRouteReducer';
+import { connect, ConnectedProps } from 'react-redux';
+import SpotPlayerLoader from '../spot-player-w-loader/SpotPlayerLoader';
+import MapUiBtn from '../default-map-ui-btn/MapUiBtn';
+import { SET_ACTIVE_SOUND } from '../../redux/active-route/activeRouteActions';
+
+//redux
+const msp = ({ activeRoute }: { activeRoute: ARRootState }) => ({
+    activeNode: activeRoute.activeNode,
+});
+const mdp = (dispatch: (action: Action) => void) => ({
+    SET_ACTIVE_SOUND: (uri: string | null) => dispatch(SET_ACTIVE_SOUND(uri)),
+});
+const connector = connect(msp, mdp);
+type reduxProps = ConnectedProps&lt;typeof connector>;
+
+export interface soundMedia {
+    artist: string | null;
+    name: string;
+    publisher: string | null;
+    description: string | null;
+    uri: string;
+}
+/**
+ * Components allows user to query spotify for playlists/tracks/podcasts, or preview/clear the current activeSoundMedia
+ * @activeNode current selected node
+ * @SET_ACTIVE_SOUND sets the soundMedia property for activeNode
+
+ */
+const SpotifySearch: React.FC&lt;reduxProps> = function ({ activeNode, SET_ACTIVE_SOUND }) {
+    const { user } = useAuth0();
+    const [searchInput, setSearchInput] = useState&lt;string>('');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const [searchResults, setSearchResults] = useState&lt;any>(null);
+    const [resultType, setResultType] = useState&lt;string>('tracks');
+
+    /**
+     * function query's spotify(based on input) and formats the data to be rendered for user
+     * @param event.target.value input beig used to query spotify
+
+    */
+    const searchInputHandler = async ({ target: { value } }: React.ChangeEvent&lt;HTMLInputElement>) => {
+        setSearchInput(value);
+
+        let results = null;
+        const trimmedInput = value.trim();
+        if (trimmedInput.length > 0) {
+            results = await Promise.all(
+                [
+                    `https://api.spotify.com/v1/search?q=${trimmedInput}&amp;type=track&amp;market=from_token`,
+                    `https://api.spotify.com/v1/search?q=${trimmedInput}&amp;type=show&amp;market=from_token`,
+                    `https://api.spotify.com/v1/search?q=${trimmedInput}&amp;type=playlist&amp;market=from_token`,
+                ].map(async (url) => {
+                    const resp = await fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            Authorization: `Bearer ${user['https://my.ns/spotify/access_token']}`,
+                            Accept: 'application/json',
+                            'Content-Type': 'application/json',
+                        },
+                    });
+
+                    return resp.json();
+                }),
+            );
+        }
+        let formatedResults = null;
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const format = (items: any[]) =>
+            items.map((item) => {
+                const { uri, name, publisher, artists, description } = item;
+                console.log(item);
+                return {
+                    uri: uri,
+                    name: name,
+                    publisher: publisher ? publisher : null,
+                    artist: artists ? artists[0].name : null,
+                    description: description ? description : null,
+                };
+            });
+        if (results) {
+            const [{ tracks }, { shows }, { playlists }] = results;
+            formatedResults = {
+                tracks: format(tracks.items),
+                playlists: format(playlists.items),
+                shows: format(shows.items),
+            };
+            return setSearchResults(formatedResults);
+        }
+        return setSearchResults(null);
+    };
+
+    /**
+     * function renders SpotifySearchPreview components from searchResult state, will show either playlists, tracks, or podcasts based on resultType state
+
+    */
+    const renderSearchResults = () => {
+        if (searchResults &amp;&amp; resultType === 'tracks')
+            return (
+                &lt;>
+                    &lt;h1 className="tracks-header">Track Results&lt;/h1>
+                    &lt;div className="spotify-results-tracks">
+                        {searchResults.tracks.map((track: soundMedia) => (
+                            &lt;SpotifySearchPreview {...track} key={track.uri} />
+                        ))}
+                    &lt;/div>
+                &lt;/>
+            );
+        else if (searchResults &amp;&amp; resultType === 'podcasts')
+            return (
+                &lt;>
+                    &lt;h1 className="tracks-header">Podcast Results&lt;/h1>
+                    &lt;div className="spotify-results-tracks">
+                        {searchResults.shows.map((show: soundMedia) => (
+                            &lt;SpotifySearchPreview {...show} key={show.uri} />
+                        ))}
+                    &lt;/div>
+                &lt;/>
+            );
+        else if (searchResults &amp;&amp; resultType === 'playlists')
+            return (
+                &lt;>
+                    &lt;h1 className="tracks-header">Playlist Results&lt;/h1>
+                    &lt;div className="spotify-results-tracks">
+                        {searchResults.playlists.map((pl: soundMedia) => (
+                            &lt;SpotifySearchPreview {...pl} key={pl.uri} />
+                        ))}
+                    &lt;/div>
+                &lt;/>
+            );
+    };
+
+    return activeNode &amp;&amp; activeNode.soundMedia ? (
+        &lt;div className="spotify-emb-container">
+            &lt;SpotPlayerLoader uri={activeNode.soundMedia} />
+            &lt;div className="spacer" style={{ height: '3rem' }}>&lt;/div>
+            &lt;MapUiBtn iconName="trash alternate" text="Clear Media" bottomText clickFN={() => SET_ACTIVE_SOUND(null)} />
+        &lt;/div>
+    ) : (
+        &lt;div className="spotify-search-container">
+            &lt;div className="spotify-search-options">
+                &lt;div className="ss-type-btn" onClick={() => setResultType('tracks')}>
+                    Tracks
+                &lt;/div>
+                &lt;div className="ss-type-btn" onClick={() => setResultType('podcasts')}>
+                    Podcasts
+                &lt;/div>
+                &lt;div className="ss-type-btn" onClick={() => setResultType('playlists')}>
+                    Playlists
+                &lt;/div>
+            &lt;/div>
+
+            &lt;div className="spotify-search">
+                &lt;div className="ss-input-wrapper">
+                    &lt;input type="text" value={searchInput} onChange={searchInputHandler} />
+                &lt;/div>
+
+                &lt;div className="ss-icon-wrapper">
+                    &lt;Icon className="search" />
+                &lt;/div>
+                &lt;div className={`ss-results ${searchResults ? 'ss-results-active' : ''}`}>{renderSearchResults()}&lt;/div>
+            &lt;/div>
+        &lt;/div>
+    );
+};
+
+export default connector(SpotifySearch);
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AuthPage">AuthPage</a></li><li><a href="global.html#BodyForm">BodyForm</a></li><li><a href="global.html#CreatePage">CreatePage</a></li><li><a href="global.html#CurrentLocationMarker">CurrentLocationMarker</a></li><li><a href="global.html#DefaultMap">DefaultMap</a></li><li><a href="global.html#DirectionsComp">DirectionsComp</a></li><li><a href="global.html#FILTER_NODE">FILTER_NODE</a></li><li><a href="global.html#FindMeBtn">FindMeBtn</a></li><li><a href="global.html#HomePage">HomePage</a></li><li><a href="global.html#LineInput">LineInput</a></li><li><a href="global.html#LockPosBtn">LockPosBtn</a></li><li><a href="global.html#LoginButton">LoginButton</a></li><li><a href="global.html#LogoutButton">LogoutButton</a></li><li><a href="global.html#MapForm">MapForm</a></li><li><a href="global.html#MapUiBar">MapUiBar</a></li><li><a href="global.html#MapUiBtn">MapUiBtn</a></li><li><a href="global.html#PLACE_CL_MARKER">PLACE_CL_MARKER</a></li><li><a href="global.html#PreviewMarker">PreviewMarker</a></li><li><a href="global.html#PUSH_TO_ACTIVE_ROUTE">PUSH_TO_ACTIVE_ROUTE</a></li><li><a href="global.html#SET_ACTIVE_IMAGE">SET_ACTIVE_IMAGE</a></li><li><a href="global.html#SET_ACTIVE_NODE">SET_ACTIVE_NODE</a></li><li><a href="global.html#SET_ACTIVE_ROUTE">SET_ACTIVE_ROUTE</a></li><li><a href="global.html#SET_ACTIVE_SOUND">SET_ACTIVE_SOUND</a></li><li><a href="global.html#SET_ACTIVE_TEXT">SET_ACTIVE_TEXT</a></li><li><a href="global.html#SET_ACTIVE_TITLE">SET_ACTIVE_TITLE</a></li><li><a href="global.html#SET_ERROR">SET_ERROR</a></li><li><a href="global.html#SET_MAP_CENTER">SET_MAP_CENTER</a></li><li><a href="global.html#SET_PREP_STATE">SET_PREP_STATE</a></li><li><a href="global.html#SoundForm">SoundForm</a></li><li><a href="global.html#SpotifySearch">SpotifySearch</a></li><li><a href="global.html#SpotPlayerLoader">SpotPlayerLoader</a></li><li><a href="global.html#TOGGLE_DIRECTIONS">TOGGLE_DIRECTIONS</a></li><li><a href="global.html#TOGGLE_IS_LOCKED">TOGGLE_IS_LOCKED</a></li><li><a href="global.html#ToggleDirectionsBtn">ToggleDirectionsBtn</a></li><li><a href="global.html#TrackSearchPreview">TrackSearchPreview</a></li><li><a href="global.html#UploadBtn">UploadBtn</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Sat Mar 06 2021 14:45:25 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

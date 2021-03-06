@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/map-form/MapForm.tsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/map-form/MapForm.tsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState } from 'react';
+import MapUiBtn from '../default-map-ui-btn/MapUiBtn';
+import './MapFormStyles.scss';
+import { connect, ConnectedProps } from 'react-redux';
+import { Action, activeNode, activeRoute, ARRootState } from '../../redux/active-route/activeRouteReducer';
+import {
+    FILTER_NODE,
+    SET_ACTIVE_IMAGE,
+    SET_ACTIVE_NODE,
+    SET_ACTIVE_ROUTE,
+    SET_ACTIVE_TEXT,
+    SET_ACTIVE_TITLE,
+    SET_ERROR,
+    SET_PREP_STATE,
+} from '../../redux/active-route/activeRouteActions';
+import BodyForm from './BodyForm';
+import ImageForm from './ImageForm';
+import SoundForm from './SoundForm';
+
+// redux
+const msp = ({ activeRoute }: { activeRoute: ARRootState }) => ({
+    // prepNode: activeRoute.prepNode,
+    activeNode: activeRoute.activeNode,
+    activeRoute: activeRoute.activeRoute,
+    // error: activeRoute.error,
+});
+
+const mdp = (dispatch: (action: Action) => void) => ({
+    SET_PREP_STATE: (bool: boolean) => dispatch(SET_PREP_STATE(bool)),
+    SET_ACTIVE_NODE: (node: activeNode | null) => dispatch(SET_ACTIVE_NODE(node)),
+    SET_ACTIVE_TITLE: (input: string) => dispatch(SET_ACTIVE_TITLE(input)),
+    SET_ACTIVE_TEXT: (input: string) => dispatch(SET_ACTIVE_TEXT(input)),
+    SET_ACTIVE_ROUTE: (route: activeRoute | null) => dispatch(SET_ACTIVE_ROUTE(route)),
+    FILTER_NODE: (key: Date | null) => dispatch(FILTER_NODE(key)),
+    SET_ERROR: (error: string | null) => dispatch(SET_ERROR(error)),
+    SET_ACTIVE_IMAGE: (imgFile: File | null) => dispatch(SET_ACTIVE_IMAGE(imgFile)),
+});
+
+const connector = connect(msp, mdp);
+type reduxProps = ConnectedProps&lt;typeof connector>;
+/**
+ * Component is form for creating/editing scavenger node routes
+ * @activeNode redux state, current node being edited
+ * @activeRoute redux state, current route being edited
+ * @SET_PREP_STATE redux action, toggles prepState(prepNode) -> true: mapOnClick enabled, fale: mapOnClick disabled
+ * @SET_ACTIVE_NODE redux action, sets activeNode in redux
+ * @SET_ACTIVE_ROUTE redux action, sets/updates activeRoute
+ * @FILTER_NODE redux action, deletes node  from activeRoute via key param matched to node property
+ * @SET_ERROR redux action, sets error string/message in redux
+ */
+const MapForm: React.FC&lt;reduxProps> = function ({
+    activeNode,
+    activeRoute,
+    SET_PREP_STATE,
+    SET_ACTIVE_NODE,
+    SET_ACTIVE_ROUTE,
+    FILTER_NODE,
+    SET_ERROR,
+}) {
+    // local state to toggle btwn form's collapsed displays
+    const [menuMode, setMenuMode] = useState('');
+
+    /**
+     * function(onClick for addNode) updates prepstate in redux, this enables the onClick function on the googleMap so the user can create a node
+     * @reduxActions SET_PREP_STATE
+     */
+    const addNodeClickHandler = () => {
+        SET_PREP_STATE(true);
+    };
+
+    /**
+     * function unselects current active node and reverts any changes or deletes it from render state if unsaved, also toggles prepstate to disables map OnClick
+     * @reduxActions SET_PREP_STATE, FILTER_NODE, SET_ACTIVE_NODE, SET_ACTIVE_ROUTE
+     */
+    const cancelNodeClickHandler = () => {
+        // clear prep state
+        SET_PREP_STATE(false);
+
+        // null key === unsaved node, filtering unsaved nodes
+        if (activeNode &amp;&amp; activeNode.key === null) {
+            FILTER_NODE(activeNode.key);
+            //clear activeNode
+            SET_ACTIVE_NODE(null);
+            return;
+        }
+
+        // if key is not null ie, if active node has been saved -> revert node back to old location
+        if (activeNode) {
+            // update coords of match in arr
+            const routeClone = [...activeRoute];
+            // ref of object in clone of references so still same re
+            const arrayNode = routeClone.find((rNode) => {
+                if (rNode &amp;&amp; activeNode) return rNode.key === activeNode.key;
+            });
+
+            Object.assign(arrayNode, { lat: activeNode.lat, lng: activeNode.lng });
+            SET_ACTIVE_ROUTE(routeClone);
+            SET_ACTIVE_NODE(null);
+        }
+    };
+
+    /**
+     * function clears and removes currentActive node from its own state and activeRoute, also toggles prepstate to disables map OnClick
+     * @reduxActions SET_PREP_STATE, FILTER_NODE, SET_ACTIVE_NODE, SET_ACTIVE_ROUTE
+     */
+    const deleteNodeHandler = () => {
+        SET_PREP_STATE(false);
+
+        // deletes node from route based on key
+        if (activeNode) {
+            FILTER_NODE(activeNode.key);
+            SET_ACTIVE_NODE(null);
+        }
+    };
+
+    /**
+     * function matches active node to it's index inside activeRoute array
+     * @params activeRoute[]
+     * @returns index | null
+     */
+    const matchNodeIndex = (routes: activeRoute) => {
+        for (let i = 0; i &lt; routes.length; i++) {
+            const node = routes[i];
+            if (node &amp;&amp; activeNode &amp;&amp; node.key === activeNode.key) return i;
+        }
+        return null;
+    };
+
+    /**
+     * function compares activeNode to its corrosponding object in activeRoute array to see if activeNode is edited
+     * @params activeRoute[]
+     * @returns true | false
+     */
+    const isNodeEdited = (routes: activeRoute) => {
+        let match = null;
+        for (const node of routes) {
+            if (node &amp;&amp; activeNode &amp;&amp; node.key === activeNode.key) match = node;
+        }
+        if (match &amp;&amp; activeNode) {
+            if (
+                match.text !== activeNode.text ||
+                match.title !== activeNode.title ||
+                match.lat !== activeNode.lat ||
+                match.lng !== activeNode.lng ||
+                match.img !== activeNode.img ||
+                match.soundMedia !== activeNode.soundMedia
+            )
+                return true;
+        }
+
+        return false;
+    };
+
+    /**
+     * function saves activeNode/activeNode changes to its corrosponding reference in the activeRoute
+     */
+    const addNodeToActiveRoute = () => {
+        // limit number of nodes(google free directions renderer max's on 8 markers)
+        if (activeRoute.length > 7) {
+            SET_ERROR('MAX NODE COUNT IS 8(SORRY, CANT AFFORD PREM GOOG MAPS LOL)');
+            setTimeout(() => SET_ERROR(null), 3000);
+            return;
+
+            // validates that node includes a title
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        } else if (activeNode!.title.length &lt;= 0) {
+            SET_ERROR('Node Title Required');
+            setTimeout(() => SET_ERROR(null), 3000);
+            return;
+        }
+
+        // index of actniveNode in activeRoute
+        const index = matchNodeIndex(activeRoute);
+
+        // reference to the node inside Route
+        let newNode = index || index === 0 ? activeRoute[index] : null;
+
+        // dont want to overwrite lat and lng in array because inverted state logic
+        if (newNode &amp;&amp; activeNode &amp;&amp; (index || index === 0)) {
+            newNode = Object.assign(newNode, activeNode, {
+                key: Date.now() + '',
+                lat: newNode.lat,
+                lng: newNode.lng,
+            });
+            // update the state
+            SET_ACTIVE_ROUTE(activeRoute.map((node) => Object.assign({}, node)));
+            SET_ACTIVE_NODE(Object.assign({}, activeRoute[index]));
+        }
+    };
+    // body menu
+    if (menuMode === 'main')
+        return (
+            &lt;BodyForm
+                setMenuMode={setMenuMode}
+                addNodeClickHandler={addNodeClickHandler}
+                cancelNodeClickHandler={cancelNodeClickHandler}
+                isNodeEdited={isNodeEdited}
+                addNodeToActiveRoute={addNodeToActiveRoute}
+                deleteNodeHandler={deleteNodeHandler}
+            />
+        );
+    // img menu
+    else if (menuMode === 'img')
+        return (
+            &lt;ImageForm
+                setMenuMode={setMenuMode}
+                cancelNodeClickHandler={cancelNodeClickHandler}
+                isNodeEdited={isNodeEdited}
+                addNodeToActiveRoute={addNodeToActiveRoute}
+                addNodeClickHandler={addNodeClickHandler}
+            />
+        );
+    // music
+    else if (menuMode === 'music')
+        return (
+            &lt;SoundForm
+                setMenuMode={setMenuMode}
+                cancelNodeClickHandler={cancelNodeClickHandler}
+                isNodeEdited={isNodeEdited}
+                addNodeToActiveRoute={addNodeToActiveRoute}
+                addNodeClickHandler={addNodeClickHandler}
+            />
+        );
+    // collapsed menu
+    else
+        return (
+            &lt;>
+                &lt;div className="map-form map-form-colap">
+                    &lt;MapUiBtn iconName="arrow alternate circle up" text="" clickFN={() => setMenuMode('main')} />
+                    &lt;p>Open Body Section&lt;/p>
+                &lt;/div>
+
+                &lt;div className="map-form map-form-colap-middle">
+                    &lt;MapUiBtn iconName="arrow alternate circle up" text="" clickFN={() => setMenuMode('img')} />
+                    &lt;p>Open Image Section&lt;/p>
+                &lt;/div>
+
+                &lt;div className="map-form map-form-colap-right">
+                    &lt;MapUiBtn iconName="arrow alternate circle up" text="" clickFN={() => setMenuMode('music')} />
+                    &lt;p>Open Music Section&lt;/p>
+                &lt;/div>
+            &lt;/>
+        );
+};
+export default connector(MapForm);
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AuthPage">AuthPage</a></li><li><a href="global.html#BodyForm">BodyForm</a></li><li><a href="global.html#CreatePage">CreatePage</a></li><li><a href="global.html#CurrentLocationMarker">CurrentLocationMarker</a></li><li><a href="global.html#DefaultMap">DefaultMap</a></li><li><a href="global.html#DirectionsComp">DirectionsComp</a></li><li><a href="global.html#FILTER_NODE">FILTER_NODE</a></li><li><a href="global.html#FindMeBtn">FindMeBtn</a></li><li><a href="global.html#HomePage">HomePage</a></li><li><a href="global.html#LineInput">LineInput</a></li><li><a href="global.html#LockPosBtn">LockPosBtn</a></li><li><a href="global.html#LoginButton">LoginButton</a></li><li><a href="global.html#LogoutButton">LogoutButton</a></li><li><a href="global.html#MapForm">MapForm</a></li><li><a href="global.html#MapUiBar">MapUiBar</a></li><li><a href="global.html#MapUiBtn">MapUiBtn</a></li><li><a href="global.html#PLACE_CL_MARKER">PLACE_CL_MARKER</a></li><li><a href="global.html#PreviewMarker">PreviewMarker</a></li><li><a href="global.html#PUSH_TO_ACTIVE_ROUTE">PUSH_TO_ACTIVE_ROUTE</a></li><li><a href="global.html#SET_ACTIVE_IMAGE">SET_ACTIVE_IMAGE</a></li><li><a href="global.html#SET_ACTIVE_NODE">SET_ACTIVE_NODE</a></li><li><a href="global.html#SET_ACTIVE_ROUTE">SET_ACTIVE_ROUTE</a></li><li><a href="global.html#SET_ACTIVE_SOUND">SET_ACTIVE_SOUND</a></li><li><a href="global.html#SET_ACTIVE_TEXT">SET_ACTIVE_TEXT</a></li><li><a href="global.html#SET_ACTIVE_TITLE">SET_ACTIVE_TITLE</a></li><li><a href="global.html#SET_ERROR">SET_ERROR</a></li><li><a href="global.html#SET_MAP_CENTER">SET_MAP_CENTER</a></li><li><a href="global.html#SET_PREP_STATE">SET_PREP_STATE</a></li><li><a href="global.html#SoundForm">SoundForm</a></li><li><a href="global.html#SpotifySearch">SpotifySearch</a></li><li><a href="global.html#SpotPlayerLoader">SpotPlayerLoader</a></li><li><a href="global.html#TOGGLE_DIRECTIONS">TOGGLE_DIRECTIONS</a></li><li><a href="global.html#TOGGLE_IS_LOCKED">TOGGLE_IS_LOCKED</a></li><li><a href="global.html#ToggleDirectionsBtn">ToggleDirectionsBtn</a></li><li><a href="global.html#TrackSearchPreview">TrackSearchPreview</a></li><li><a href="global.html#UploadBtn">UploadBtn</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Sat Mar 06 2021 14:45:25 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

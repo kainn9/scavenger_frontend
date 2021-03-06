@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: App.tsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: App.tsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React from 'react';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import { Route, Switch, withRouter, RouteComponentProps, Redirect } from 'react-router-dom';
+import './App.scss';
+import { useAuth0 } from '@auth0/auth0-react';
+import ProtectedRoute from './auth/protected-route';
+import HomePage from './pages/home-map-page/HomePage';
+import AuthPage from './pages/auth-page/AuthPage';
+import { Dimmer, Loader } from 'semantic-ui-react';
+import CreatePage from './pages/create-map-page/CreatePage';
+
+/**
+ * Component for routing and routings anims
+ *
+ * @component
+ */
+
+// props
+type StateType = {
+    transition?: string; // classname for routing animations
+    timeout?: number; // animation length / how long both pages are visiblr
+};
+// eslint-disable-next-line @typescript-eslint/ban-types
+type IndexProps = RouteComponentProps&lt;{}, {}, StateType>;
+
+const App: React.FC&lt;IndexProps> = function ({ location }) {
+    // render loader if while waiting to see if user is authenticated
+    const { isLoading, isAuthenticated } = useAuth0();
+    if (isLoading) {
+        return (
+            &lt;Dimmer active>
+                &lt;Loader />
+            &lt;/Dimmer>
+        );
+    }
+    return (
+        &lt;>
+            {/* TransitionGroup -> HOC for handling routing anims */}
+            &lt;TransitionGroup
+                id="transition-group"
+                // childFactory + react.cloneEl lets transGrp apply css classes for anim based on injected state
+                childFactory={(child) =>
+                    React.cloneElement(child, {
+                        classNames: location.state ? location.state.transition : 'default',
+                        timeout: location.state ? location.state.timeout : 0,
+                    })
+                }
+            >
+                {/* Hoc passes in the injected props from TransGroup for routing anims */}
+                &lt;CSSTransition timeout={1500} key={location.key}>
+                    &lt;Switch location={location}>
+                        {/* login page/rootpage is not protected but will redirect authenticated users to home page */}
+                        &lt;Route
+                            exact
+                            path="/"
+                            render={() => (isAuthenticated ? &lt;Redirect to="/home" /> : &lt;AuthPage />)}
+                        />
+                        {/* protected routes redirect to login automatically  */}
+                        &lt;ProtectedRoute path="/home" component={HomePage} />
+                        &lt;ProtectedRoute path="/create" component={CreatePage} />
+                    &lt;/Switch>
+                &lt;/CSSTransition>
+            &lt;/TransitionGroup>
+        &lt;/>
+    );
+};
+
+export default withRouter(App);
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AuthPage">AuthPage</a></li><li><a href="global.html#BodyForm">BodyForm</a></li><li><a href="global.html#CreatePage">CreatePage</a></li><li><a href="global.html#CurrentLocationMarker">CurrentLocationMarker</a></li><li><a href="global.html#DefaultMap">DefaultMap</a></li><li><a href="global.html#DirectionsComp">DirectionsComp</a></li><li><a href="global.html#FILTER_NODE">FILTER_NODE</a></li><li><a href="global.html#FindMeBtn">FindMeBtn</a></li><li><a href="global.html#HomePage">HomePage</a></li><li><a href="global.html#LineInput">LineInput</a></li><li><a href="global.html#LockPosBtn">LockPosBtn</a></li><li><a href="global.html#LoginButton">LoginButton</a></li><li><a href="global.html#LogoutButton">LogoutButton</a></li><li><a href="global.html#MapForm">MapForm</a></li><li><a href="global.html#MapUiBar">MapUiBar</a></li><li><a href="global.html#MapUiBtn">MapUiBtn</a></li><li><a href="global.html#PLACE_CL_MARKER">PLACE_CL_MARKER</a></li><li><a href="global.html#PreviewMarker">PreviewMarker</a></li><li><a href="global.html#PUSH_TO_ACTIVE_ROUTE">PUSH_TO_ACTIVE_ROUTE</a></li><li><a href="global.html#SET_ACTIVE_IMAGE">SET_ACTIVE_IMAGE</a></li><li><a href="global.html#SET_ACTIVE_NODE">SET_ACTIVE_NODE</a></li><li><a href="global.html#SET_ACTIVE_ROUTE">SET_ACTIVE_ROUTE</a></li><li><a href="global.html#SET_ACTIVE_SOUND">SET_ACTIVE_SOUND</a></li><li><a href="global.html#SET_ACTIVE_TEXT">SET_ACTIVE_TEXT</a></li><li><a href="global.html#SET_ACTIVE_TITLE">SET_ACTIVE_TITLE</a></li><li><a href="global.html#SET_ERROR">SET_ERROR</a></li><li><a href="global.html#SET_MAP_CENTER">SET_MAP_CENTER</a></li><li><a href="global.html#SET_PREP_STATE">SET_PREP_STATE</a></li><li><a href="global.html#SoundForm">SoundForm</a></li><li><a href="global.html#SpotifySearch">SpotifySearch</a></li><li><a href="global.html#SpotPlayerLoader">SpotPlayerLoader</a></li><li><a href="global.html#TOGGLE_DIRECTIONS">TOGGLE_DIRECTIONS</a></li><li><a href="global.html#TOGGLE_IS_LOCKED">TOGGLE_IS_LOCKED</a></li><li><a href="global.html#ToggleDirectionsBtn">ToggleDirectionsBtn</a></li><li><a href="global.html#TrackSearchPreview">TrackSearchPreview</a></li><li><a href="global.html#UploadBtn">UploadBtn</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Sat Mar 06 2021 14:45:25 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
