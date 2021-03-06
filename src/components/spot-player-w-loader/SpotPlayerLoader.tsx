@@ -23,7 +23,7 @@ const SpotPlayerLoader: React.FC<Props> = function ({ uri, customWidth }) {
     }, []);
     return isMounted ? (
         <SpotifyPlayer
-            uri={uri /*uriSwap */}
+            uri={uriSwap}
             size={{
                 width: customWidth || '230rem',
                 height: uri.slice(8, 13) === 'track' ? '85rem' : '153rem',
