@@ -69,11 +69,7 @@ const SoundForm: React.FC<Props> = function ({
                     </div>
 
                     <div className="mf-active-container mf-active-music-mode">
-                        <div className="mf-music-options">
-                            <p>Search Spotify</p>
-                            <p>Your Music</p>
-                        </div>
-                        <div className="mf-spotify-comp-container">{true ? <SpotifySearch /> : null}</div>
+                        <SpotifySearch />
                     </div>
 
                     <div className="mf-btns-container">
