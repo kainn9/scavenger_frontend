@@ -198,5 +198,17 @@ body {
         .info-window-inner {
             max-height: 30rem;
         }
+
+        .spot-search-prev {
+            min-height: 6rem;
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            span {
+                font-size: 1.4rem;
+            }
+        }
     }
 }

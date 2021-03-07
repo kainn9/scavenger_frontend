@@ -1,18 +1,18 @@
 @import '../../mixins.scss';
 .spot-search-prev {
     position: relative;
-    padding: 1rem 1.8rem 1rem 1rem;
-    overflow-x: hidden;
+    padding: 0.5rem 1.8rem 0.5rem 1rem;
+    min-height: 3.5rem;
 
     @include yellow-border-and-font();
     h1 {
         margin-bottom: 0.1rem;
-        font-size: 2.2rem;
+        font-size: 1.4rem;
         width: 80%;
     }
 
     span {
-        font-size: 1.7rem;
+        font-size: 1rem;
     }
 
     .map-ui-btn {
