@@ -109,7 +109,7 @@ const CreatePage: React.FC<RouteComponentProps & reduxProps> = function ({
             <MapUiBar>
                 <LogoutButton />
                 <MapUiBtn iconName="user circle" text="Profile" />
-                <MapUiBtn iconName="edit" text="Create" clickFN={() => history.push('/create')} />
+                <MapUiBtn iconName="edit" text="Home" clickFN={() => history.push('/home')} />
                 <LockPosBtn />
                 <FindMeBtn />
             </MapUiBar>
