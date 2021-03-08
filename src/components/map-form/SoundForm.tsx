@@ -26,6 +26,7 @@ interface Props extends ReduxProps {
     isNodeEdited: (ar: activeRoute) => boolean;
     addNodeToActiveRoute: () => void;
     addNodeClickHandler: () => void;
+    deleteNodeHandler: () => void;
 }
 /**
  * mapform sub componnet/form for title/body text
@@ -34,6 +35,7 @@ interface Props extends ReduxProps {
  * @param props.cancelNodeClickHandler function unselects current active node and reverts any changes or deletes it from render state if unsaved, also toggles prepstate to disables map OnClick
  * @param props.isNodeEdited function compares activeNode to its corrosponding object in activeRoute array to see if activeNode is edited
  * @param props.addNodeToActiveRoute function saves activeNode/activeNode changes to its corrosponding reference in the activeRoute
+ * @param props.deleteNodeHandler function clears and removes currentActive node from its own state and activeRoute, also toggles prepstate to disables map OnClick
  * @prepNode redux state, prepNode -> true: mapOnClick enabled, fale: mapOnClick disabled
  * @activeNode redux state, current node selected
  * @activeRoute redux state, current activeRoute
@@ -54,6 +56,7 @@ const SoundForm: React.FC<Props> = function ({
     isNodeEdited,
     addNodeToActiveRoute,
     addNodeClickHandler,
+    deleteNodeHandler,
 }) {
     return (
         <form className={`map-form ${activeNode ? 'map-form-music' : ''}`} onSubmit={(e) => e.preventDefault()}>
@@ -79,6 +82,13 @@ const SoundForm: React.FC<Props> = function ({
                             text="Menus"
                             bottomText
                             clickFN={() => setMenuMode('')}
+                        />
+                        <MapUiBtn
+                            text="Remove"
+                            iconName="window close"
+                            fontColor="red"
+                            bottomText
+                            clickFN={deleteNodeHandler}
                         />
                         {isNodeEdited(activeRoute) ? (
                             <MapUiBtn

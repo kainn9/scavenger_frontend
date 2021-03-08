@@ -208,6 +208,7 @@ const MapForm: React.FC<reduxProps> = function ({
                 isNodeEdited={isNodeEdited}
                 addNodeToActiveRoute={addNodeToActiveRoute}
                 addNodeClickHandler={addNodeClickHandler}
+                deleteNodeHandler={deleteNodeHandler}
             />
         );
     // music
@@ -219,6 +220,7 @@ const MapForm: React.FC<reduxProps> = function ({
                 isNodeEdited={isNodeEdited}
                 addNodeToActiveRoute={addNodeToActiveRoute}
                 addNodeClickHandler={addNodeClickHandler}
+                deleteNodeHandler={deleteNodeHandler}
             />
         );
     // collapsed menu
