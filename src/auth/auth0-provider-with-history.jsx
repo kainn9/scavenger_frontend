@@ -17,6 +17,7 @@ const Auth0ProviderWithHistory = ({ children }) => {
         <Auth0Provider
             domain={domain}
             clientId={clientId}
+            audience={'https://scav-backend.herokuapp.com/'}
             redirectUri={`${process.env.REACT_APP_FRLINK}`}
             //onRedirectCallback={onRedirectCallback}
         >

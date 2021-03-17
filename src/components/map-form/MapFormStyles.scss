@@ -3,7 +3,6 @@
     height: 30vh;
     width: 100%;
     padding: 1rem;
-    background-image: linear-gradient(to right, #222831, #393e46);
     position: absolute;
     bottom: 8rem;
     display: flex;
@@ -11,8 +10,7 @@
     color: #ffd369;
     z-index: 2;
     opacity: 0.9;
-    box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em,
-        rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
+    @include menuBlackGradient();
     .text-body {
         display: flex;
         flex-direction: column;
@@ -190,4 +188,24 @@ $collapMenuHeight: 8rem;
     i {
         font-size: 2.5rem;
     }
+}
+
+.submit-zone {
+    position: absolute;
+    padding-top: 1rem;
+    bottom: 16.5rem;
+    height: 7rem;
+    width: 8rem;
+    text-align: center;
+    border-radius: 2rem;
+    i {
+        font-size: 2rem;
+        color: rgb(57, 207, 57);
+    }
+    p {
+        color: rgb(57, 207, 57);
+        font-size: 1rem;
+    }
+    @include centerAbs();
+    @include menuBlackGradient();
 }

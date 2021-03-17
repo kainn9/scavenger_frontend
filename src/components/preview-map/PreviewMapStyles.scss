@@ -1,0 +1,51 @@
+@import '../../mixins.scss';
+.prev-map-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    .prev-map-header-container {
+        height: 10vh;
+        width: 100%;
+        @include menuBlackGradient();
+        text-align: center;
+        padding: 0.4rem;
+        p {
+            cursor: pointer;
+        }
+    }
+    .marker-preview {
+        height: 100%;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        @include menuBlackGradient();
+        .node-prev-empty {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100%;
+            text-align: center;
+            .emp-text {
+                font-size: 1.8rem;
+            }
+            i {
+                padding-top: 0.5rem;
+                font-size: 3rem;
+            }
+        }
+        .active-preview {
+            height: 20vh;
+            padding-top: 0.5rem;
+            width: 100%;
+            overflow-y: scroll;
+            text-align: center;
+            .marker-prev-img {
+                height: 9rem;
+                object-fit: cover;
+            }
+        }
+    }
+}

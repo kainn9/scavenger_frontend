@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { connect, ConnectedProps } from 'react-redux';
 import MapUiBtn from '../../components/default-map-ui-btn/MapUiBtn';
@@ -7,14 +7,20 @@ import FindMeBtn from '../../components/find-me-btn/FindMeBtn';
 import LockPosBtn from '../../components/lock-pos-btn/LockPosBtn';
 import MapForm from '../../components/map-form/MapForm';
 import MapUiBar from '../../components/map-ui-bar/MapBar';
-import { PUSH_TO_ACTIVE_ROUTE, SET_ACTIVE_NODE, SET_PREP_STATE } from '../../redux/active-route/activeRouteActions';
-import { Action, activeNode, ARRootState } from '../../redux/active-route/activeRouteReducer';
+import {
+    PUSH_TO_ACTIVE_ROUTE,
+    SET_ACTIVE_NODE,
+    SET_ACTIVE_ROUTE,
+    SET_PREP_STATE,
+} from '../../redux/active-route/activeRouteActions';
+import { Action, activeNode, activeRoute, ARRootState } from '../../redux/active-route/activeRouteReducer';
 import './CreatePageStyles.scss';
 import LogoutButton from '../../components/logout-button/LogoutButton';
 import PreviewMarker from '../../components/preview-marker/PreviewMarker';
 import ToggleDirectionsBtn from '../../components/toggle-directions-btn/ToggleDirectionsBtn';
 import DirectionsComp from '../../components/directions/DirectionsComp';
 import { MRootState } from '../../redux/map/mapReducer';
+import { useAuth0 } from '@auth0/auth0-react';
 
 // redux
 const msp = ({ activeRoute, map }: { activeRoute: ARRootState; map: MRootState }) => ({
@@ -27,6 +33,7 @@ const msp = ({ activeRoute, map }: { activeRoute: ARRootState; map: MRootState }
 const mdp = (dispatch: (action: Action) => void) => ({
     SET_PREP_STATE: (bool: boolean) => dispatch(SET_PREP_STATE(bool)),
     SET_ACTIVE_NODE: (node: activeNode) => dispatch(SET_ACTIVE_NODE(node)),
+    SET_ACTIVE_ROUTE: (route: activeRoute | null) => dispatch(SET_ACTIVE_ROUTE(route)),
     PUSH_TO_ACTIVE_ROUTE: (node: activeNode) => dispatch(PUSH_TO_ACTIVE_ROUTE(node)),
 });
 
@@ -52,11 +59,13 @@ const CreatePage: React.FC<RouteComponentProps & reduxProps> = function ({
     SET_PREP_STATE,
     SET_ACTIVE_NODE,
     PUSH_TO_ACTIVE_ROUTE,
+    SET_ACTIVE_ROUTE,
 }) {
     /* 
         if prepState is not active creates a node with null key(null key === unsaved node), adds it to current route, 
         turns prepState back on 
     */
+    const { user } = useAuth0();
     const addNode = (e: google.maps.MapMouseEvent | google.maps.IconMouseEvent) => {
         if (prepNode) {
             SET_PREP_STATE(false);
@@ -85,7 +94,14 @@ const CreatePage: React.FC<RouteComponentProps & reduxProps> = function ({
             }
         });
     };
-
+    // cleanup
+    useEffect(() => {
+        const cleanUpNodesAndRoute = () => {
+            SET_ACTIVE_NODE(null);
+            SET_ACTIVE_ROUTE([]);
+        };
+        return cleanUpNodesAndRoute;
+    }, []);
     return (
         <>
             {/* Scavengers defauly google map */}
@@ -108,8 +124,8 @@ const CreatePage: React.FC<RouteComponentProps & reduxProps> = function ({
             {/* main navbar -> renders children buttons */}
             <MapUiBar>
                 <LogoutButton />
-                <MapUiBtn iconName="user circle" text="Profile" />
-                <MapUiBtn iconName="edit" text="Home" clickFN={() => history.push('/home')} />
+                <MapUiBtn iconName="user circle" text="Profile" clickFN={() => history.push(`/user/${user.email}`)} />
+                <MapUiBtn iconName="map" text="Home" clickFN={() => history.push('/home')} />
                 <LockPosBtn />
                 <FindMeBtn />
             </MapUiBar>

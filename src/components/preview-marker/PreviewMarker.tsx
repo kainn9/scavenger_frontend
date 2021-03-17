@@ -23,6 +23,8 @@ type reduxProps = ConnectedProps<typeof connector>;
 
 interface Props extends reduxProps {
     node: activeNode;
+    noDrag?: boolean;
+    disableIFV?: boolean;
 }
 
 /**
@@ -34,7 +36,15 @@ interface Props extends reduxProps {
  * @SET_ACTIVE_ROUTE redux action, sets activeRoute in redux(used to rerender route upon saved edits)
 
  */
-const PreviewMarker: React.FC<Props> = function ({ node, activeNode, activeRoute, SET_ACTIVE_NODE, SET_ACTIVE_ROUTE }) {
+const PreviewMarker: React.FC<Props> = function ({
+    node,
+    disableIFV,
+    noDrag,
+    activeNode,
+    activeRoute,
+    SET_ACTIVE_NODE,
+    SET_ACTIVE_ROUTE,
+}) {
     /**
     * function reverts lat/lng of activeNode's corrosponding object(inside activeRoute)
     * @param props.route current node data for the marker to render
@@ -108,7 +118,7 @@ const PreviewMarker: React.FC<Props> = function ({ node, activeNode, activeRoute
     return node ? (
         <div className="test1">
             <Marker
-                draggable
+                draggable={noDrag ? false : true}
                 label={node.title}
                 position={{ lat: node.lat, lng: node.lng }}
                 icon={{
@@ -120,7 +130,7 @@ const PreviewMarker: React.FC<Props> = function ({ node, activeNode, activeRoute
                 onClick={clickHandler}
                 onDragEnd={updateActiveNodeOnDrag}
             ></Marker>
-            {IFV ? (
+            {IFV && !disableIFV ? (
                 <InfoWindow
                     position={{ lat: node.lat, lng: node.lng }}
                     onCloseClick={() => {

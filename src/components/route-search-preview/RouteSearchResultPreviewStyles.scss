@@ -1,0 +1,22 @@
+@import '../../mixins.scss';
+.route-s-result {
+    position: relative;
+    cursor: pointer;
+    height: 6rem;
+    width: 100%;
+    @include yellow-border-and-font();
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.8rem;
+    padding-bottom: 1.5rem;
+    p {
+        padding-top: 0.5rem;
+    }
+    i {
+        position: absolute;
+        right: 3rem;
+        top: 1rem;
+        font-size: 2.5rem;
+    }
+}

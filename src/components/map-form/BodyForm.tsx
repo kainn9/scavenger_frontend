@@ -65,7 +65,7 @@ const BodyForm: React.FC<Props> = function ({
     deleteNodeHandler,
 }) {
     return (
-        <form className="map-form" onSubmit={(e) => e.preventDefault()}>
+        <form className="map-form">
             <div className="mf-error">
                 {error ? (
                     <>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import MapUiBtn from '../default-map-ui-btn/MapUiBtn';
 import './MapFormStyles.scss';
 import { connect, ConnectedProps } from 'react-redux';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { Action, activeNode, activeRoute, ARRootState } from '../../redux/active-route/activeRouteReducer';
 import {
     FILTER_NODE,
@@ -16,6 +17,8 @@ import {
 import BodyForm from './BodyForm';
 import ImageForm from './ImageForm';
 import SoundForm from './SoundForm';
+import { useAuth0 } from '@auth0/auth0-react';
+import { SET_MAP_SUCCESS_MSG } from '../../redux/map/mapActions';
 
 // redux
 const msp = ({ activeRoute }: { activeRoute: ARRootState }) => ({
@@ -34,6 +37,7 @@ const mdp = (dispatch: (action: Action) => void) => ({
     FILTER_NODE: (key: Date | null) => dispatch(FILTER_NODE(key)),
     SET_ERROR: (error: string | null) => dispatch(SET_ERROR(error)),
     SET_ACTIVE_IMAGE: (imgFile: File | null) => dispatch(SET_ACTIVE_IMAGE(imgFile)),
+    SET_MAP_SUCCESS_MSG: (mapMsg: string) => dispatch(SET_MAP_SUCCESS_MSG(mapMsg)),
 });
 
 const connector = connect(msp, mdp);
@@ -48,7 +52,8 @@ type reduxProps = ConnectedProps<typeof connector>;
  * @FILTER_NODE redux action, deletes node  from activeRoute via key param matched to node property
  * @SET_ERROR redux action, sets error string/message in redux
  */
-const MapForm: React.FC<reduxProps> = function ({
+const MapForm: React.FC<reduxProps & RouteComponentProps> = function ({
+    history,
     activeNode,
     activeRoute,
     SET_PREP_STATE,
@@ -56,9 +61,10 @@ const MapForm: React.FC<reduxProps> = function ({
     SET_ACTIVE_ROUTE,
     FILTER_NODE,
     SET_ERROR,
+    SET_MAP_SUCCESS_MSG,
 }) {
     // local state to toggle btwn form's collapsed displays
-    const [menuMode, setMenuMode] = useState('');
+    const [menuMode, setMenuMode] = useState<string>('');
 
     /**
      * function(onClick for addNode) updates prepstate in redux, this enables the onClick function on the googleMap so the user can create a node
@@ -187,6 +193,39 @@ const MapForm: React.FC<reduxProps> = function ({
             SET_ACTIVE_NODE(Object.assign({}, activeRoute[index]));
         }
     };
+    // hook to get a token
+    const { getAccessTokenSilently } = useAuth0();
+
+    const checkForTitle = () => {
+        for (const node of activeRoute) {
+            if (node && !node.title) return false;
+        }
+        return true;
+    };
+
+    const submit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        const token = await getAccessTokenSilently({ audience: `${process.env.REACT_APP_BASE_LINK}/` });
+        const formData = new FormData();
+        for (const node of activeRoute) {
+            if (node && node.img) formData.append('img', node.img);
+        }
+
+        formData.append('json', JSON.stringify(activeRoute));
+
+        fetch(`${process.env.REACT_APP_BASE_LINK}/api/v1/routes/create`, {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+            body: formData,
+        }).then((resp) => {
+            if (resp.ok === true) {
+                SET_MAP_SUCCESS_MSG(new Date().toString());
+                history.push('/home');
+            }
+        });
+    };
     // body menu
     if (menuMode === 'main')
         return (
@@ -227,6 +266,12 @@ const MapForm: React.FC<reduxProps> = function ({
     else
         return (
             <>
+                {activeRoute.length > 0 && checkForTitle() ? (
+                    <div className="submit-zone">
+                        <MapUiBtn iconName="save" text="" clickFN={submit} />
+                        <p>SAVE ROUTE</p>
+                    </div>
+                ) : null}
                 <div className="map-form map-form-colap">
                     <MapUiBtn iconName="arrow alternate circle up" text="" clickFN={() => setMenuMode('main')} />
                     <p>Open Body Section</p>
@@ -244,4 +289,4 @@ const MapForm: React.FC<reduxProps> = function ({
             </>
         );
 };
-export default connector(MapForm);
+export default withRouter(connector(MapForm));

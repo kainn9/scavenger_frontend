@@ -6,7 +6,7 @@ import { Icon, SemanticICONS } from 'semantic-ui-react';
 interface Props {
     iconName: SemanticICONS;
     text: string;
-    clickFN?: () => void;
+    clickFN?: (() => void) | ((e: React.FormEvent) => void);
     bottomText?: boolean;
     fontColor?: string;
     style?: Record<string, unknown>;

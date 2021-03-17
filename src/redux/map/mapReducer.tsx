@@ -2,14 +2,12 @@ export interface center {
     lat: number;
     lng: number;
 }
-
-export type infoBox = {
-    title: string;
-};
-
 export interface MRootState {
     center: center;
     showDirections: boolean;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mapIFV: any;
+    mapMsg: string;
 }
 
 export interface Action {
@@ -21,6 +19,8 @@ export interface Action {
 const INIT_STATE = {
     center: { lat: 40.7128, lng: -74.006 },
     showDirections: false,
+    mapIFV: false,
+    mapMsg: '',
 };
 
 const mapReducer = function (prevState = INIT_STATE, { type, payload }: Action): MRootState {
@@ -34,6 +34,17 @@ const mapReducer = function (prevState = INIT_STATE, { type, payload }: Action):
             return {
                 ...prevState,
                 showDirections: !prevState.showDirections,
+            };
+
+        case 'SET_MAP_IFV':
+            return {
+                ...prevState,
+                mapIFV: payload,
+            };
+        case 'SET_MAP_SUCCESS_MSG':
+            return {
+                ...prevState,
+                mapMsg: payload,
             };
         default:
             return prevState;

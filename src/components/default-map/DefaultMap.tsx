@@ -31,6 +31,10 @@ interface mapProps extends reduxProps {
     onMapClick?: (e: google.maps.MapMouseEvent | google.maps.IconMouseEvent) => void;
     children?: React.ReactNode;
     minZoom?: number;
+    noSearch?: boolean;
+    doNotSyncCenter?: boolean;
+    customCenter?: { lat: number; lng: number };
+    customHeight?: string;
 }
 // google maps expects external var(outside component) for extra libraries used...Places is needed for address lookup/search
 const lib: Libraries = ['places'];
@@ -46,11 +50,22 @@ const lib: Libraries = ['places'];
  * @children jsx inbwtn tags
 
  */
-const DefaultMap = function ({ children, minZoom, clMarkerEnabled, center, SET_MAP_CENTER, onMapClick }: mapProps) {
+const DefaultMap = function ({
+    children,
+    minZoom,
+    noSearch,
+    customHeight,
+    customCenter,
+    clMarkerEnabled,
+    doNotSyncCenter,
+    center,
+    SET_MAP_CENTER,
+    onMapClick,
+}: mapProps) {
     // sizing for goole map
     const containerStyle = {
         width: '100%',
-        height: '100vh',
+        height: customHeight || '100vh',
     };
 
     const mapRef = useRef<any>(null); //ref used access gMaps methods like getCenter() or panTo()
@@ -86,17 +101,17 @@ const DefaultMap = function ({ children, minZoom, clMarkerEnabled, center, SET_M
             <div className="map-wrapper">
                 <GoogleMap
                     onLoad={handleLoad}
-                    center={center}
+                    center={customCenter || center}
                     zoom={16}
                     options={{ disableDefaultUI: true, minZoom: minZoom || 15, maxZoom: 22 }}
                     onClick={(e) => (onMapClick ? onMapClick(e) : null)}
                     mapContainerStyle={containerStyle}
-                    onDragEnd={onDrag}
+                    onDragEnd={doNotSyncCenter ? () => null : onDrag}
                 >
                     {clMarkerEnabled ? <CurrentLocationMarker /> : null}
                     {children}
                 </GoogleMap>
-                <GmapSbar panTo={panTo} SET_MAP_CENTER={SET_MAP_CENTER} />
+                {noSearch ? null : <GmapSbar panTo={panTo} SET_MAP_CENTER={SET_MAP_CENTER} />}
             </div>
         </LoadScriptNext>
     );

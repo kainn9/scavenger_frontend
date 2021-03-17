@@ -7,7 +7,21 @@ export type activeNode = {
     img?: File | null;
     soundMedia?: string | null;
 } | null;
+export type backendNode = {
+    title: string;
+    text: string;
+    lat: number;
+    lng: number;
+    key: Date | null;
+    img?: { url: string; key: string } | null;
+    soundMedia?: string | null;
+};
 export type activeRoute = Array<activeNode>;
+
+export interface backendRoute {
+    title: string;
+    nodes: Array<activeNode>;
+}
 
 export interface ARRootState {
     prepNode: boolean;

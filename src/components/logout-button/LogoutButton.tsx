@@ -12,7 +12,7 @@ const LogoutButton: React.FC = () => {
             text="Logout"
             clickFN={() =>
                 logout({
-                    returnTo: `${process.env.REACT_APP_FRLINK}`,
+                    returnTo: `${process.env.REACT_APP_LOGIN_LINK}`,
                 })
             }
         />

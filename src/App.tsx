@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { Route, Switch, withRouter, RouteComponentProps, Redirect } from 'react-router-dom';
 import './App.scss';
@@ -8,6 +8,7 @@ import HomePage from './pages/home-map-page/HomePage';
 import AuthPage from './pages/auth-page/AuthPage';
 import { Dimmer, Loader } from 'semantic-ui-react';
 import CreatePage from './pages/create-map-page/CreatePage';
+import UserPage from './pages/user-page/UserPage';
 
 /**
  * Component for routing and routings anims
@@ -25,7 +26,26 @@ type IndexProps = RouteComponentProps<{}, {}, StateType>;
 
 const App: React.FC<IndexProps> = function ({ location }) {
     // render loader if while waiting to see if user is authenticated
-    const { isLoading, isAuthenticated } = useAuth0();
+    const { isLoading, isAuthenticated, getAccessTokenSilently } = useAuth0();
+    useEffect(() => {
+        const getUserData = async () => {
+            if (isAuthenticated) {
+                const token = await getAccessTokenSilently({ audience: `${process.env.REACT_APP_BASE_LINK}/` });
+
+                if (token) {
+                    fetch(`${process.env.REACT_APP_BASE_LINK}/api/v1/users/validate`, {
+                        method: 'GET',
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    });
+                }
+            }
+        };
+
+        getUserData();
+    }, [isAuthenticated]);
+
     if (isLoading) {
         return (
             <Dimmer active>
@@ -58,6 +78,7 @@ const App: React.FC<IndexProps> = function ({ location }) {
                         {/* protected routes redirect to login automatically  */}
                         <ProtectedRoute path="/home" component={HomePage} />
                         <ProtectedRoute path="/create" component={CreatePage} />
+                        <ProtectedRoute path="/user/:email" component={UserPage} />
                     </Switch>
                 </CSSTransition>
             </TransitionGroup>
