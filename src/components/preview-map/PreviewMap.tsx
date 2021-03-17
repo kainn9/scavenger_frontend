@@ -41,7 +41,7 @@ const PreviewMap: React.FC<props> = function ({ nodes, history, activeNode, crea
                 <DefaultMap
                     clMarkerEnabled
                     noSearch
-                    customHeight="35vh"
+                    customHeight="30vh"
                     doNotSyncCenter
                     customCenter={{ lat: nodes[0].lat, lng: nodes[0].lng }}
                 >
