@@ -1,11 +1,13 @@
 @import '../../mixins.scss';
+
+// prev-map header + active prev + customMap height prop in PreviewMap.tsx should be === to prev-map-container height
 .prev-map-wrapper {
     display: flex;
     flex-direction: column;
     height: 100%;
     width: 100%;
     .prev-map-header-container {
-        height: 12.5vh;
+        height: 10vh;
         width: 100%;
         @include menuBlackGradient();
         text-align: center;
@@ -37,7 +39,7 @@
             }
         }
         .active-preview {
-            height: 12.5vh;
+            height: 10vh;
             padding-top: 0.5rem;
             width: 100%;
             overflow-y: scroll;
