@@ -30,6 +30,7 @@
 import MapUiBtn from '../default-map-ui-btn/MapUiBtn';
 import './MapFormStyles.scss';
 import { connect, ConnectedProps } from 'react-redux';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { Action, activeNode, activeRoute, ARRootState } from '../../redux/active-route/activeRouteReducer';
 import {
     FILTER_NODE,
@@ -44,6 +45,8 @@ import {
 import BodyForm from './BodyForm';
 import ImageForm from './ImageForm';
 import SoundForm from './SoundForm';
+import { useAuth0 } from '@auth0/auth0-react';
+import { SET_MAP_SUCCESS_MSG } from '../../redux/map/mapActions';
 
 // redux
 const msp = ({ activeRoute }: { activeRoute: ARRootState }) => ({
@@ -62,6 +65,7 @@ const mdp = (dispatch: (action: Action) => void) => ({
     FILTER_NODE: (key: Date | null) => dispatch(FILTER_NODE(key)),
     SET_ERROR: (error: string | null) => dispatch(SET_ERROR(error)),
     SET_ACTIVE_IMAGE: (imgFile: File | null) => dispatch(SET_ACTIVE_IMAGE(imgFile)),
+    SET_MAP_SUCCESS_MSG: (mapMsg: string) => dispatch(SET_MAP_SUCCESS_MSG(mapMsg)),
 });
 
 const connector = connect(msp, mdp);
@@ -76,7 +80,8 @@ type reduxProps = ConnectedProps&lt;typeof connector>;
  * @FILTER_NODE redux action, deletes node  from activeRoute via key param matched to node property
  * @SET_ERROR redux action, sets error string/message in redux
  */
-const MapForm: React.FC&lt;reduxProps> = function ({
+const MapForm: React.FC&lt;reduxProps &amp; RouteComponentProps> = function ({
+    history,
     activeNode,
     activeRoute,
     SET_PREP_STATE,
@@ -84,9 +89,10 @@ const MapForm: React.FC&lt;reduxProps> = function ({
     SET_ACTIVE_ROUTE,
     FILTER_NODE,
     SET_ERROR,
+    SET_MAP_SUCCESS_MSG,
 }) {
     // local state to toggle btwn form's collapsed displays
-    const [menuMode, setMenuMode] = useState('');
+    const [menuMode, setMenuMode] = useState&lt;string>('');
 
     /**
      * function(onClick for addNode) updates prepstate in redux, this enables the onClick function on the googleMap so the user can create a node
@@ -215,6 +221,44 @@ const MapForm: React.FC&lt;reduxProps> = function ({
             SET_ACTIVE_NODE(Object.assign({}, activeRoute[index]));
         }
     };
+    // hook to get a token
+    const { getAccessTokenSilently } = useAuth0();
+    /**
+     * function returns bool, based on if activeRoute has a node missing a title
+     * @returns boolean -> false === a title is missing, true === all nodes have titles
+     */
+    const checkForTitle = () => {
+        for (const node of activeRoute) {
+            if (node &amp;&amp; !node.title) return false;
+        }
+        return true;
+    };
+    /**
+        function creates a route in DB from activeRoute state, gives user timestamp + success message, and redirects back to home
+     */
+    const submit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        const token = await getAccessTokenSilently({ audience: `${process.env.REACT_APP_BASE_LINK}/` });
+        const formData = new FormData();
+        for (const node of activeRoute) {
+            if (node &amp;&amp; node.img) formData.append('img', node.img);
+        }
+
+        formData.append('json', JSON.stringify(activeRoute));
+
+        fetch(`${process.env.REACT_APP_BASE_LINK}/api/v1/routes/create`, {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+            body: formData,
+        }).then((resp) => {
+            if (resp.ok === true) {
+                SET_MAP_SUCCESS_MSG(new Date().toString());
+                history.push('/home');
+            }
+        });
+    };
     // body menu
     if (menuMode === 'main')
         return (
@@ -236,6 +280,7 @@ const MapForm: React.FC&lt;reduxProps> = function ({
                 isNodeEdited={isNodeEdited}
                 addNodeToActiveRoute={addNodeToActiveRoute}
                 addNodeClickHandler={addNodeClickHandler}
+                deleteNodeHandler={deleteNodeHandler}
             />
         );
     // music
@@ -247,12 +292,19 @@ const MapForm: React.FC&lt;reduxProps> = function ({
                 isNodeEdited={isNodeEdited}
                 addNodeToActiveRoute={addNodeToActiveRoute}
                 addNodeClickHandler={addNodeClickHandler}
+                deleteNodeHandler={deleteNodeHandler}
             />
         );
     // collapsed menu
     else
         return (
             &lt;>
+                {activeRoute.length > 0 &amp;&amp; checkForTitle() ? (
+                    &lt;div className="submit-zone">
+                        &lt;MapUiBtn iconName="save" text="" clickFN={submit} />
+                        &lt;p>SAVE ROUTE&lt;/p>
+                    &lt;/div>
+                ) : null}
                 &lt;div className="map-form map-form-colap">
                     &lt;MapUiBtn iconName="arrow alternate circle up" text="" clickFN={() => setMenuMode('main')} />
                     &lt;p>Open Body Section&lt;/p>
@@ -270,7 +322,7 @@ const MapForm: React.FC&lt;reduxProps> = function ({
             &lt;/>
         );
 };
-export default connector(MapForm);
+export default withRouter(connector(MapForm));
 </code></pre>
         </article>
     </section>
@@ -281,13 +333,13 @@ export default connector(MapForm);
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AuthPage">AuthPage</a></li><li><a href="global.html#BodyForm">BodyForm</a></li><li><a href="global.html#CreatePage">CreatePage</a></li><li><a href="global.html#CurrentLocationMarker">CurrentLocationMarker</a></li><li><a href="global.html#DefaultMap">DefaultMap</a></li><li><a href="global.html#DirectionsComp">DirectionsComp</a></li><li><a href="global.html#FILTER_NODE">FILTER_NODE</a></li><li><a href="global.html#FindMeBtn">FindMeBtn</a></li><li><a href="global.html#HomePage">HomePage</a></li><li><a href="global.html#LineInput">LineInput</a></li><li><a href="global.html#LockPosBtn">LockPosBtn</a></li><li><a href="global.html#LoginButton">LoginButton</a></li><li><a href="global.html#LogoutButton">LogoutButton</a></li><li><a href="global.html#MapForm">MapForm</a></li><li><a href="global.html#MapUiBar">MapUiBar</a></li><li><a href="global.html#MapUiBtn">MapUiBtn</a></li><li><a href="global.html#PLACE_CL_MARKER">PLACE_CL_MARKER</a></li><li><a href="global.html#PreviewMarker">PreviewMarker</a></li><li><a href="global.html#PUSH_TO_ACTIVE_ROUTE">PUSH_TO_ACTIVE_ROUTE</a></li><li><a href="global.html#SET_ACTIVE_IMAGE">SET_ACTIVE_IMAGE</a></li><li><a href="global.html#SET_ACTIVE_NODE">SET_ACTIVE_NODE</a></li><li><a href="global.html#SET_ACTIVE_ROUTE">SET_ACTIVE_ROUTE</a></li><li><a href="global.html#SET_ACTIVE_SOUND">SET_ACTIVE_SOUND</a></li><li><a href="global.html#SET_ACTIVE_TEXT">SET_ACTIVE_TEXT</a></li><li><a href="global.html#SET_ACTIVE_TITLE">SET_ACTIVE_TITLE</a></li><li><a href="global.html#SET_ERROR">SET_ERROR</a></li><li><a href="global.html#SET_MAP_CENTER">SET_MAP_CENTER</a></li><li><a href="global.html#SET_PREP_STATE">SET_PREP_STATE</a></li><li><a href="global.html#SoundForm">SoundForm</a></li><li><a href="global.html#SpotifySearch">SpotifySearch</a></li><li><a href="global.html#SpotPlayerLoader">SpotPlayerLoader</a></li><li><a href="global.html#TOGGLE_DIRECTIONS">TOGGLE_DIRECTIONS</a></li><li><a href="global.html#TOGGLE_IS_LOCKED">TOGGLE_IS_LOCKED</a></li><li><a href="global.html#ToggleDirectionsBtn">ToggleDirectionsBtn</a></li><li><a href="global.html#TrackSearchPreview">TrackSearchPreview</a></li><li><a href="global.html#UploadBtn">UploadBtn</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#AuthPage">AuthPage</a></li><li><a href="global.html#BodyForm">BodyForm</a></li><li><a href="global.html#CreatePage">CreatePage</a></li><li><a href="global.html#CurrentLocationMarker">CurrentLocationMarker</a></li><li><a href="global.html#DefaultMap">DefaultMap</a></li><li><a href="global.html#DirectionsComp">DirectionsComp</a></li><li><a href="global.html#FILTER_NODE">FILTER_NODE</a></li><li><a href="global.html#FindMeBtn">FindMeBtn</a></li><li><a href="global.html#HomePage">HomePage</a></li><li><a href="global.html#ImageForm">ImageForm</a></li><li><a href="global.html#LineInput">LineInput</a></li><li><a href="global.html#LockPosBtn">LockPosBtn</a></li><li><a href="global.html#LoginButton">LoginButton</a></li><li><a href="global.html#LogoutButton">LogoutButton</a></li><li><a href="global.html#MapForm">MapForm</a></li><li><a href="global.html#MapUiBar">MapUiBar</a></li><li><a href="global.html#MapUiBtn">MapUiBtn</a></li><li><a href="global.html#PLACE_CL_MARKER">PLACE_CL_MARKER</a></li><li><a href="global.html#PreviewMarker">PreviewMarker</a></li><li><a href="global.html#PUSH_TO_ACTIVE_ROUTE">PUSH_TO_ACTIVE_ROUTE</a></li><li><a href="global.html#SET_ACTIVE_IMAGE">SET_ACTIVE_IMAGE</a></li><li><a href="global.html#SET_ACTIVE_NODE">SET_ACTIVE_NODE</a></li><li><a href="global.html#SET_ACTIVE_ROUTE">SET_ACTIVE_ROUTE</a></li><li><a href="global.html#SET_ACTIVE_SOUND">SET_ACTIVE_SOUND</a></li><li><a href="global.html#SET_ACTIVE_TEXT">SET_ACTIVE_TEXT</a></li><li><a href="global.html#SET_ACTIVE_TITLE">SET_ACTIVE_TITLE</a></li><li><a href="global.html#SET_ERROR">SET_ERROR</a></li><li><a href="global.html#SET_MAP_CENTER">SET_MAP_CENTER</a></li><li><a href="global.html#SET_PREP_STATE">SET_PREP_STATE</a></li><li><a href="global.html#SoundForm">SoundForm</a></li><li><a href="global.html#SpotifySearch">SpotifySearch</a></li><li><a href="global.html#SpotPlayerLoader">SpotPlayerLoader</a></li><li><a href="global.html#TOGGLE_DIRECTIONS">TOGGLE_DIRECTIONS</a></li><li><a href="global.html#TOGGLE_IS_LOCKED">TOGGLE_IS_LOCKED</a></li><li><a href="global.html#ToggleDirectionsBtn">ToggleDirectionsBtn</a></li><li><a href="global.html#TrackSearchPreview">TrackSearchPreview</a></li><li><a href="global.html#UploadBtn">UploadBtn</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Sat Mar 06 2021 14:45:25 GMT-0500 (Eastern Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Wed Mar 17 2021 22:19:38 GMT-0400 (Eastern Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

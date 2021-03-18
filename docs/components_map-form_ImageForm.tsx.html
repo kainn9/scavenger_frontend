@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: components/map-form/BodyForm.tsx</title>
+    <title>JSDoc: Source: components/map-form/ImageForm.tsx</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: components/map-form/BodyForm.tsx</h1>
+    <h1 class="page-title">Source: components/map-form/ImageForm.tsx</h1>
 
     
 
@@ -29,36 +29,28 @@
             <pre class="prettyprint source linenums"><code>import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Icon } from 'semantic-ui-react';
-import { SET_ACTIVE_TEXT, SET_ACTIVE_TITLE, SET_ERROR } from '../../redux/active-route/activeRouteActions';
+import { SET_ACTIVE_IMAGE, SET_ERROR } from '../../redux/active-route/activeRouteActions';
 import { Action, activeRoute, ARRootState } from '../../redux/active-route/activeRouteReducer';
 import MapUiBtn from '../default-map-ui-btn/MapUiBtn';
-import LineInput from '../line-input/LineInput';
+import UploadBtn from '../prettier-upload-btn/UploadBtn';
 
-//redux
+// redux
 const msp = ({ activeRoute }: { activeRoute: ARRootState }) => ({
     prepNode: activeRoute.prepNode,
     activeNode: activeRoute.activeNode,
     activeRoute: activeRoute.activeRoute,
     error: activeRoute.error,
 });
+
 const mdp = (dispatch: (action: Action) => void) => ({
-    SET_ACTIVE_TITLE: (input: string) => dispatch(SET_ACTIVE_TITLE(input)),
-    SET_ACTIVE_TEXT: (input: string) => dispatch(SET_ACTIVE_TEXT(input)),
     SET_ERROR: (error: string | null) => dispatch(SET_ERROR(error)),
+    SET_ACTIVE_IMAGE: (imgFile: File | null) => dispatch(SET_ACTIVE_IMAGE(imgFile)),
 });
+
 const connector = connect(msp, mdp);
 type ReduxProps = ConnectedProps&lt;typeof connector>;
-
-interface Props extends ReduxProps {
-    setMenuMode: (s: string) => void;
-    addNodeClickHandler: () => void;
-    cancelNodeClickHandler: () => void;
-    isNodeEdited: (activeRoute: activeRoute) => boolean;
-    addNodeToActiveRoute: () => void;
-    deleteNodeHandler: () => void;
-}
 /**
- * mapform sub componnet/form for title/body text
+ * mapForm subcomponent is form for setting img value
  * @param props.setMenuMode function sets value for menuMode(mapform local state that determines which subform to display)
  * @param props.addNodeClickHandler function(onClick for addNode) updates prepstate in redux, this enables the onClick function on the googleMap so the user can create a node
  * @param props.cancelNodeClickHandler function unselects current active node and reverts any changes or deletes it from render state if unsaved, also toggles prepstate to disables map OnClick
@@ -68,111 +60,140 @@ interface Props extends ReduxProps {
  * @prepNode redux state, prepNode -> true: mapOnClick enabled, fale: mapOnClick disabled
  * @activeNode redux state, current node selected
  * @activeRoute redux state, current activeRoute
- * @error redux state, error message/string
- * @SET_ACTIVE_TITLE redux action, updates/sets current activeNode.title
- * @SET_ACTIVE_TEXT redux action, updates/sets current activeNode.text
+ * @error error message/string
+ * @SET_ACTIVE_IMAGE redux action, updates/sets current activeNode.text
  * @SET_ERROR redux action, sets error string/message in redux
- * @error redux action, sets error string/message in redux
  */
-const BodyForm: React.FC&lt;Props> = function ({
+
+// interface Props extends ReduxProps {
+//     setMenuMode: (s: string) => void;
+//     cancelNodeClickHandler: () => void;
+//     isNodeEdited: (ar: activeRoute) => boolean;
+//     addNodeToActiveRoute: () => void;
+//     addNodeClickHandler: () => void;
+//     deleteNodeHandler: () => void;
+// }
+
+const ImageForm: React.FC&lt;Props> = function ({
     // redux state
-    prepNode,
     activeNode,
-    activeRoute,
+    prepNode,
     error,
-    // redux action methods
-    SET_ACTIVE_TITLE,
-    SET_ACTIVE_TEXT,
+    activeRoute,
+    //redux action methods
     SET_ERROR,
+    SET_ACTIVE_IMAGE,
     //parent methods
-    setMenuMode,
-    addNodeClickHandler,
     cancelNodeClickHandler,
+    setMenuMode,
     isNodeEdited,
     addNodeToActiveRoute,
+    addNodeClickHandler,
     deleteNodeHandler,
 }) {
     return (
-        &lt;form className="map-form">
-            &lt;div className="mf-error">
-                {error ? (
-                    &lt;>
-                        &lt;p>{error}&lt;/p>{' '}
-                        &lt;MapUiBtn iconName="window close" text="" bottomText clickFN={() => SET_ERROR(null)} />
-                    &lt;/>
-                ) : null}
-            &lt;/div>
-            &lt;div className="mf-active-container">
-                {activeNode ? (
-                    &lt;div className="mf-active-node">
-                        &lt;LineInput
-                            name="title"
-                            value={activeNode.title}
-                            inputHandler={({ target: { value } }) => SET_ACTIVE_TITLE(value)}
-                        >
-                            Enter Title
-                        &lt;/LineInput>
-                        &lt;div className="text-body">
-                            &lt;label>Add Body&lt;/label>
-                            &lt;textarea
-                                name="body-text"
-                                value={activeNode.text}
-                                onChange={({ target: { value } }) => SET_ACTIVE_TEXT(value)}
+        &lt;form
+            className={`map-form ${activeNode &amp;&amp; activeNode.img ? 'map-form-img' : ''}`}
+            onSubmit={(e) => e.preventDefault()}
+        >
+            {activeNode ? (
+                &lt;>
+                    &lt;div className="mf-error">
+                        {error ? (
+                            &lt;>
+                                &lt;p>{error}&lt;/p>
+                                &lt;MapUiBtn iconName="window close" text="" bottomText clickFN={() => SET_ERROR(null)} />
+                            &lt;/>
+                        ) : null}
+                    &lt;/div>
+
+                    &lt;div className="mf-active-container mf-active-img-mode">
+                        {activeNode &amp;&amp; activeNode.img ? (
+                            &lt;>
+                                &lt;label>Image Preview&lt;/label>
+                                &lt;img
+                                    className="preview-img"
+                                    src={
+                                        typeof activeNode.img === 'string'
+                                            ? activeNode.img
+                                            : URL.createObjectURL(activeNode.img)
+                                    }
+                                />
+                            &lt;/>
+                        ) : null}
+
+                        {!activeNode.img ? (
+                            &lt;UploadBtn>Attach Image To Node&lt;/UploadBtn>
+                        ) : (
+                            &lt;MapUiBtn
+                                iconName="window close"
+                                text="Clear"
+                                bottomText
+                                clickFN={() => SET_ACTIVE_IMAGE(null)}
                             />
+                        )}
+                    &lt;/div>
+
+                    &lt;div className="mf-btns-container">
+                        &lt;MapUiBtn text="Unselect" iconName="window close" bottomText clickFN={cancelNodeClickHandler} />
+                        &lt;MapUiBtn
+                            iconName="arrow alternate circle down"
+                            text="Menus"
+                            bottomText
+                            clickFN={() => setMenuMode('')}
+                        />
+                        &lt;MapUiBtn
+                            text="Remove"
+                            iconName="window close"
+                            fontColor="red"
+                            bottomText
+                            clickFN={deleteNodeHandler}
+                        />
+
+                        {isNodeEdited(activeRoute) ? (
+                            &lt;MapUiBtn
+                                text="Lock In"
+                                iconName="check circle"
+                                bottomText
+                                clickFN={addNodeToActiveRoute}
+                            />
+                        ) : null}
+                    &lt;/div>
+                &lt;/>
+            ) : (
+                &lt;>
+                    &lt;div className="mf-active-container ">
+                        &lt;div className="mf-empty-pc">
+                            {!prepNode ? (
+                                &lt;>
+                                    &lt;p>NO NODES SELECTED&lt;/p>
+                                    &lt;Icon className="exclamation circle" />
+                                &lt;/>
+                            ) : (
+                                &lt;>
+                                    &lt;p>CLICK MAP TO PLACE NODE&lt;/p>
+                                    &lt;Icon className="map pin" />
+                                &lt;/>
+                            )}
                         &lt;/div>
                     &lt;/div>
-                ) : prepNode ? (
-                    &lt;div className="mf-empty-pc">
-                        &lt;p>CLICK MAP TO PLACE NODE&lt;/p>
-                        &lt;Icon className="map pin" />
+
+                    &lt;div className="mf-btns-container">
+                        &lt;MapUiBtn
+                            iconName="arrow alternate circle down"
+                            text="Menus"
+                            bottomText
+                            clickFN={() => setMenuMode('')}
+                        />
+                        &lt;MapUiBtn text="Add Node" iconName="plus square" bottomText clickFN={addNodeClickHandler} />
                     &lt;/div>
-                ) : (
-                    &lt;div className="mf-empty-pc">
-                        &lt;p>NO NODES SELECTED&lt;/p>
-                        &lt;Icon className="exclamation circle" />
-                    &lt;/div>
-                )}
-            &lt;/div>
-            {activeNode ? (
-                &lt;div className="mf-btns-container">
-                    &lt;MapUiBtn text="Unselect" iconName="window close" bottomText clickFN={cancelNodeClickHandler} />
-                    &lt;MapUiBtn
-                        text="Menus"
-                        iconName="arrow alternate circle down"
-                        bottomText
-                        clickFN={() => setMenuMode('')}
-                    />
-                    &lt;MapUiBtn
-                        text="Remove"
-                        iconName="window close"
-                        fontColor="red"
-                        bottomText
-                        clickFN={deleteNodeHandler}
-                    />
-                    {isNodeEdited(activeRoute) ? (
-                        &lt;MapUiBtn text="Lock In" iconName="check circle" bottomText clickFN={addNodeToActiveRoute} />
-                    ) : null}
-                &lt;/div>
-            ) : prepNode ? (
-                &lt;div className="mf-btns-container">
-                    &lt;MapUiBtn text="Unselect" iconName="window close" bottomText clickFN={cancelNodeClickHandler} />
-                &lt;/div>
-            ) : (
-                &lt;div className="mf-btns-container">
-                    &lt;MapUiBtn
-                        iconName="arrow alternate circle down"
-                        text="Menus"
-                        bottomText
-                        clickFN={() => setMenuMode('')}
-                    />
-                    &lt;MapUiBtn text="Add Node" iconName="plus square" bottomText clickFN={addNodeClickHandler} />
-                &lt;/div>
+                &lt;/>
             )}
         &lt;/form>
     );
 };
 
-export default connector(BodyForm);
+export default connector(ImageForm);
 </code></pre>
         </article>
     </section>
