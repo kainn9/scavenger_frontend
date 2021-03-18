@@ -9,7 +9,7 @@ Note: demo may be buggy at times as app is in development.
 
 ## Video Overview
 
-[Video Demo](https://kainan.io/static/media/scav-vid2.1e46ed74.mp4)
+[Video Demo](https://www.youtube.com/watch?v=tApE3d16Nl4)
 
 ## Brief Summary:
 
