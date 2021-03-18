@@ -1,26 +1,27 @@
 .h-page {
     .gm-style-iw-d {
-        border-radius: 0.8rem;
-        width: 220px;
-        .ifv-map-container {
-            height: 60vh;
+        padding: 0;
+        width: 260px;
+        #ifv-div-wrapper {
+            height: fit-content;
             width: 210px;
-            border-radius: 0.8rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            .prev-map-wrapper {
-                padding: 1rem;
+            padding: 1rem;
+            .ifv-map-container {
+                height: 60vh;
+                width: 200px;
                 border-radius: 0.8rem;
-            }
-            .prev-map-header-container {
-                h1 {
-                    font-size: 1.1rem;
-                    margin-bottom: 0.2rem;
-                }
-                p {
-                    font-size: 1rem;
-                    margin-bottom: 0.25rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                .prev-map-header-container {
+                    h1 {
+                        font-size: 1.1rem;
+                        margin-bottom: 0.2rem;
+                    }
+                    p {
+                        font-size: 1rem;
+                        margin-bottom: 0.25rem;
+                    }
                 }
             }
         }

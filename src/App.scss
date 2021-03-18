@@ -220,9 +220,13 @@ body {
             .gm-style-iw-d {
                 height: 62vh;
                 width: 648px;
-                .ifv-map-container {
-                    padding-left: 0;
-                    width: 620px;
+                #ifv-div-wrapper {
+                    width: 648px;
+                    padding: 0;
+                    .ifv-map-container {
+                        padding-left: 0;
+                        width: 648px;
+                    }
                 }
             }
         }
