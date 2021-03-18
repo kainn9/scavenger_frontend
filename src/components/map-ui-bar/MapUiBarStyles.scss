@@ -1,7 +1,7 @@
 .map-ui {
     background-image: linear-gradient(to right, #222831, #393e46);
     border-radius: 0.4rem;
-    height: 7.8rem;
+    height: 4.4rem;
     width: 100%;
     position: absolute;
     bottom: 0rem;
@@ -14,4 +14,10 @@
         rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
     opacity: 0.9;
     z-index: 5;
+    i {
+        font-size: 2rem;
+    }
+    p {
+        margin-bottom: 0.2rem;
+    }
 }
