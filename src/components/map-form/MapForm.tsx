@@ -195,14 +195,19 @@ const MapForm: React.FC<reduxProps & RouteComponentProps> = function ({
     };
     // hook to get a token
     const { getAccessTokenSilently } = useAuth0();
-
+    /**
+     * function returns bool, based on if activeRoute has a node missing a title
+     * @returns boolean -> false === a title is missing, true === all nodes have titles
+     */
     const checkForTitle = () => {
         for (const node of activeRoute) {
             if (node && !node.title) return false;
         }
         return true;
     };
-
+    /**
+        function creates a route in DB from activeRoute state, gives user timestamp + success message, and redirects back to home
+     */
     const submit = async (e: React.FormEvent) => {
         e.preventDefault();
         const token = await getAccessTokenSilently({ audience: `${process.env.REACT_APP_BASE_LINK}/` });
