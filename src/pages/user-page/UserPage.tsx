@@ -5,18 +5,22 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import PreviewMap from '../../components/preview-map/PreviewMap';
 import { Icon } from 'semantic-ui-react';
-import { ARRootState, backendRoute } from '../../redux/active-route/activeRouteReducer';
+import { Action, activeRoute, ARRootState, backendRoute } from '../../redux/active-route/activeRouteReducer';
 import RouteSearchResultPreview from '../../components/route-search-preview/RouteSearchResultPreview';
 import { connect, ConnectedProps } from 'react-redux';
 import MapUiBar from '../../components/map-ui-bar/MapBar';
 import MapUiBtn from '../../components/default-map-ui-btn/MapUiBtn';
 import LogoutButton from '../../components/logout-button/LogoutButton';
+import { SET_ACTIVE_ROUTE } from '../../redux/active-route/activeRouteActions';
 
 //redux
 const msp = ({ activeRoute }: { activeRoute: ARRootState }) => ({
     activeRoute: activeRoute.activeRoute,
 });
-const connector = connect(msp);
+const mdp = (dispatch: (action: Action) => void) => ({
+    SET_ACTIVE_ROUTE: (route: activeRoute | null) => dispatch(SET_ACTIVE_ROUTE(route)),
+});
+const connector = connect(msp, mdp);
 type ReduxProps = ConnectedProps<typeof connector>;
 
 interface user {
@@ -28,6 +32,7 @@ const UserPage: React.FC<RouteComponentProps<{ email: string }> & ReduxProps> = 
     history,
     match,
     activeRoute,
+    SET_ACTIVE_ROUTE,
 }) {
     const {
         params: { email },
@@ -53,6 +58,7 @@ const UserPage: React.FC<RouteComponentProps<{ email: string }> & ReduxProps> = 
         };
         fetchUser();
     }, []);
+    useEffect(() => SET_ACTIVE_ROUTE(null), []);
     const renderUserRoutes = () => {
         if (user) {
             if (user.routes.length === 0) return <h1>{email} has not created any routes</h1>;
@@ -81,7 +87,7 @@ const UserPage: React.FC<RouteComponentProps<{ email: string }> & ReduxProps> = 
         <div className="user-page">
             <h1>{`${email}'s Page`}</h1>
             <div className="prev-map-container">
-                {activeRoute.length ? (
+                {activeRoute && activeRoute.length ? (
                     <PreviewMap nodes={activeRoute} creator={{ email: user!.email, creatorID: user!.id }} />
                 ) : (
                     <>
