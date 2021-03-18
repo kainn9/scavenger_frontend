@@ -9,7 +9,7 @@
     .prev-map-header-container {
         height: 7vh;
         width: 100%;
-        @include menuBlackGradient();
+        @include royalGradi();
         text-align: center;
         padding: 0.4rem;
         h1 {
@@ -27,7 +27,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        @include menuBlackGradient();
+        @include royalGradi();
         .node-prev-empty {
             display: flex;
             justify-content: center;
@@ -53,9 +53,13 @@
             overflow-y: scroll;
             overflow-x: hidden;
             text-align: center;
+            h1 {
+                margin-bottom: 2rem;
+            }
             .marker-prev-img {
-                height: 9rem;
+                max-height: 20rem;
                 object-fit: cover;
+                padding-bottom: 1rem;
             }
         }
     }

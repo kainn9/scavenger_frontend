@@ -85,7 +85,7 @@ const UserPage: React.FC<RouteComponentProps<{ email: string }> & ReduxProps> = 
         </div>
     ) : (
         <div className="user-page">
-            <h1>{`${email}'s Page`}</h1>
+            <h1 id="user-email-header">{`${email}'s Page`}</h1>
             <div className="prev-map-container">
                 {activeRoute && activeRoute.length ? (
                     <PreviewMap nodes={activeRoute} creator={{ email: user!.email, creatorID: user!.id }} />

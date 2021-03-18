@@ -5,6 +5,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    @include yellowBlueGradi();
+    #user-email-header {
+        color: #141e30;
+    }
     .prev-map-container {
         display: flex;
         flex-direction: column;
@@ -12,6 +16,7 @@
         justify-content: center;
         height: 50vh;
         width: 100%;
+        @include royalGradi();
         @include yellow-border-and-font();
         i {
             font-size: 3rem;
@@ -22,6 +27,7 @@
         height: 17vh;
         width: 100%;
         @include yellow-border-and-font();
+        @include royalGradi();
         overflow-x: hidden;
         overflow-y: scroll;
     }
