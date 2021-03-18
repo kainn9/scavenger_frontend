@@ -219,11 +219,14 @@ body {
         .h-page {
             .gm-style-iw-d {
                 height: 62vh;
+                width: 648px;
                 .ifv-map-container {
+                    padding-left: 0;
                     width: 620px;
                 }
             }
         }
+
         .prev-map-header-container {
             h1 {
                 font-size: 1.4rem;
