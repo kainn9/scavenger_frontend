@@ -14,13 +14,16 @@ const connector = connect(msp);
 
 type ReduxProps = ConnectedProps<typeof connector>;
 
+interface props extends ReduxProps {
+    overideRoute?: activeRoute;
+}
 /**
  * google map child component, will connect the activeRoute nodes together
  *
  * @activeRoute activeRoute in redux store
 
  */
-const DirectionsComp: React.FC<ReduxProps> = function ({ activeRoute }) {
+const DirectionsComp: React.FC<props> = function ({ activeRoute, overideRoute }) {
     // state to save directionService resp
     const [directionsResp, setDirectionsResp] = useState<any>(null);
 
@@ -33,8 +36,8 @@ const DirectionsComp: React.FC<ReduxProps> = function ({ activeRoute }) {
     */
     const getLatLng = function (index: number) {
         if (index >= 0) {
-            const lat = activeRoute[index]!.lat;
-            const lng = activeRoute[index]!.lng;
+            const lat = overideRoute ? overideRoute[index]!.lat : activeRoute[index]!.lat;
+            const lng = overideRoute ? overideRoute[index]!.lng : activeRoute[index]!.lng;
             return new google.maps.LatLng({ lat: lat, lng: lng });
         }
     };
@@ -47,7 +50,7 @@ const DirectionsComp: React.FC<ReduxProps> = function ({ activeRoute }) {
 
     */
     const getWaypoints = function (ar: activeRoute) {
-        return ar.slice(1, activeRoute.length - 1).map((node: activeNode) => {
+        return ar.slice(1, overideRoute ? overideRoute.length - 1 : activeRoute.length - 1).map((node: activeNode) => {
             return {
                 location: new google.maps.LatLng(node!.lat, node!.lng),
             };
@@ -76,9 +79,9 @@ const DirectionsComp: React.FC<ReduxProps> = function ({ activeRoute }) {
             <DirectionsService
                 // required
                 options={{
-                    destination: getLatLng(activeRoute.length - 1),
+                    destination: getLatLng(overideRoute ? overideRoute.length - 1 : activeRoute.length - 1),
                     origin: getLatLng(0),
-                    waypoints: getWaypoints(activeRoute),
+                    waypoints: getWaypoints(overideRoute || activeRoute),
                     travelMode: google.maps.TravelMode.WALKING,
                 }}
                 // required

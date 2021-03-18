@@ -7,6 +7,7 @@ import PreviewMarker from '../preview-marker/PreviewMarker';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import SpotPlayerLoader from '../spot-player-w-loader/SpotPlayerLoader';
 import './PreviewMapStyles.scss';
+import DirectionsComp from '../directions/DirectionsComp';
 
 //redux
 const msp = ({ activeRoute }: { activeRoute: ARRootState }) => ({
@@ -47,6 +48,7 @@ const PreviewMap: React.FC<props> = function ({ nodes, history, activeNode, crea
                     customCenter={{ lat: nodes[0].lat, lng: nodes[0].lng }}
                 >
                     {renderNodes()}
+                    {nodes && nodes.length > 1 ? <DirectionsComp overideRoute={nodes} /> : null}
                 </DefaultMap>
             </div>
             <div className="marker-preview">

@@ -73,7 +73,7 @@ const PreviewMarker: React.FC<Props> = function ({
     const clickHandler = () => {
         // if active node key matches node key -or- no activeNode
         if ((activeNode && node && activeNode.key !== node.key) || (node && !activeNode)) {
-            revertOldNodePosOnSwitch([...activeRoute]);
+            if (activeRoute) revertOldNodePosOnSwitch([...activeRoute]);
             SET_ACTIVE_NODE({ ...node });
         }
         toggleIFV((ps) => !ps);
