@@ -3,9 +3,10 @@
         width: 65vw;
         .ifv-map-container {
             height: 60vh;
-            width: 90%;
+            width: 100%;
             .prev-map-wrapper {
-                width: 100%;
+                width: 99%;
+                border-radius: 0.5rem;
             }
         }
     }
