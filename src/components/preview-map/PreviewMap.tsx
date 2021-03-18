@@ -18,8 +18,9 @@ type ReduxProps = ConnectedProps<typeof connector>;
 interface props extends ReduxProps, RouteComponentProps {
     nodes: Array<activeNode>;
     creator: { email: string; creatorID: string };
+    customHeight?: string;
 }
-const PreviewMap: React.FC<props> = function ({ nodes, history, activeNode, creator }) {
+const PreviewMap: React.FC<props> = function ({ nodes, history, activeNode, creator, customHeight }) {
     const renderNodes = function () {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return nodes.map((node: any) => {
@@ -41,7 +42,7 @@ const PreviewMap: React.FC<props> = function ({ nodes, history, activeNode, crea
                 <DefaultMap
                     clMarkerEnabled
                     noSearch
-                    customHeight="30vh"
+                    customHeight={customHeight || '30vh'}
                     doNotSyncCenter
                     customCenter={{ lat: nodes[0].lat, lng: nodes[0].lng }}
                 >

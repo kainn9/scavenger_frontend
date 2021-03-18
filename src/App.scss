@@ -219,11 +219,16 @@ body {
         .h-page {
             .gm-style-iw-d {
                 height: 62vh;
-                width: 640px;
+                .ifv-map-container {
+                    width: 620px;
+                }
             }
         }
         .user-routes-preview-container {
-            height: 25vh;
+            height: 36vh;
+            .route-s-result {
+                height: 15vh;
+            }
         }
     }
 }

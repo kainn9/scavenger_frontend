@@ -7,13 +7,18 @@
     height: 100%;
     width: 100%;
     .prev-map-header-container {
-        height: 10vh;
+        height: 7vh;
         width: 100%;
         @include menuBlackGradient();
         text-align: center;
         padding: 0.4rem;
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.2rem;
+        }
         p {
             cursor: pointer;
+            font-size: 1.2rem;
         }
     }
     .marker-preview {
@@ -39,10 +44,14 @@
             }
         }
         .active-preview {
-            height: 10vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 13vh;
             padding-top: 0.5rem;
             width: 100%;
             overflow-y: scroll;
+            overflow-x: hidden;
             text-align: center;
             .marker-prev-img {
                 height: 9rem;

@@ -1,13 +1,9 @@
 .h-page {
     .gm-style-iw-d {
-        width: 65vw;
+        width: fit-content;
         .ifv-map-container {
             height: 60vh;
-            width: 100%;
-            .prev-map-wrapper {
-                width: 99%;
-                border-radius: 0.5rem;
-            }
+            width: 200px;
         }
     }
 }
