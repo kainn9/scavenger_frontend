@@ -4,15 +4,16 @@
         width: 260px;
         #ifv-div-wrapper {
             height: fit-content;
-            width: 210px;
+            width: 180px;
             padding: 1rem;
+            border-radius: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             .ifv-map-container {
                 height: 60vh;
-                width: 200px;
-                border-radius: 0.8rem;
-                display: flex;
-                align-items: center;
-                justify-content: center;
+                width: 100%;
+
                 .prev-map-header-container {
                     h1 {
                         font-size: 1.1rem;
