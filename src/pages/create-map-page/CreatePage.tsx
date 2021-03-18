@@ -88,11 +88,13 @@ const CreatePage: React.FC<RouteComponentProps & reduxProps> = function ({
      * @returns  jsx PreviewMarker[]
      */
     const renderRouteNodes = () => {
-        return activeRoute.map((node) => {
-            if (node) {
-                return <PreviewMarker key={node.key + ''} node={node} />;
-            }
-        });
+        if (activeRoute) {
+            return activeRoute.map((node) => {
+                if (node) {
+                    return <PreviewMarker key={node.key + ''} node={node} />;
+                }
+            });
+        }
     };
     // cleanup
     useEffect(() => {
@@ -110,11 +112,11 @@ const CreatePage: React.FC<RouteComponentProps & reduxProps> = function ({
 
                 {
                     /* connects nodes if more than 1 node exists and use has toggled directions on */
-                    activeRoute.length > 1 && showDirections ? <DirectionsComp /> : null
+                    activeRoute && activeRoute.length > 1 && showDirections ? <DirectionsComp /> : null
                 }
                 {
                     /* toggles node directions/connection lines */
-                    activeRoute.length > 1 ? <ToggleDirectionsBtn /> : null
+                    activeRoute && activeRoute.length > 1 ? <ToggleDirectionsBtn /> : null
                 }
             </DefaultMap>
 

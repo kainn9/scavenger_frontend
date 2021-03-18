@@ -271,7 +271,7 @@ const MapForm: React.FC<reduxProps & RouteComponentProps> = function ({
     else
         return (
             <>
-                {activeRoute.length > 0 && checkForTitle() ? (
+                {activeRoute && activeRoute.length > 0 && checkForTitle() ? (
                     <div className="submit-zone">
                         <MapUiBtn iconName="save" text="" clickFN={submit} />
                         <p>SAVE ROUTE</p>
