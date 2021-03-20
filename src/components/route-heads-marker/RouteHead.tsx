@@ -82,7 +82,7 @@ const RouteHead: React.FC<props> = function ({ title, lat, lng, id, mapIFV, SET_
                 >
                     <div id="ifv-div-wrapper">
                         <div className="ifv-map-container">
-                            <PreviewMap nodes={mapIFV} creator={creator} />
+                            <PreviewMap expandBtn nodes={mapIFV} creator={creator} />
                         </div>
                     </div>
                 </InfoWindow>
