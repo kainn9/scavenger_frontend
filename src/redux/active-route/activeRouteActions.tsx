@@ -109,3 +109,16 @@ export const SET_ACTIVE_SOUND = function (uri: string | null): { type: string; p
         payload: uri,
     };
 };
+export const SET_LIKES = function (likes: Array<string> | null): { type: string; payload: Array<string> | null } {
+    return {
+        type: 'SET_LIKES',
+        payload: likes,
+    };
+};
+
+export const SET_ROUTE_ID = function (id: string | null): { type: string; payload: string | null } {
+    return {
+        type: 'SET_ROUTE_ID',
+        payload: id,
+    };
+};

@@ -19,8 +19,11 @@ export type backendNode = {
 export type activeRoute = Array<activeNode>;
 
 export interface backendRoute {
+    creator: { id: string; email: string; likes: Array<string> };
     title: string;
     nodes: Array<activeNode>;
+    userLikes: Array<string>;
+    _id: string;
 }
 
 export interface ARRootState {
@@ -28,6 +31,8 @@ export interface ARRootState {
     activeNode: activeNode;
     activeRoute: activeRoute;
     error?: string | null;
+    userLikes?: Array<string> | null;
+    activeRouteID: string | null;
 }
 
 export interface Action {
@@ -41,6 +46,8 @@ const INIT_STATE: ARRootState = {
     activeNode: null,
     activeRoute: [],
     error: null,
+    userLikes: [],
+    activeRouteID: null,
 };
 
 const activeRouteReducer = function (prevState = INIT_STATE, { type, payload }: Action): ARRootState {
@@ -78,6 +85,16 @@ const activeRouteReducer = function (prevState = INIT_STATE, { type, payload }: 
             return {
                 ...prevState,
                 activeRoute: payload,
+            };
+        case 'SET_LIKES':
+            return {
+                ...prevState,
+                userLikes: payload,
+            };
+        case 'SET_ROUTE_ID':
+            return {
+                ...prevState,
+                activeRouteID: payload,
             };
         case 'SET_ACTIVE_TITLE':
             return {

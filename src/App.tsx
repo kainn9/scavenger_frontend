@@ -9,6 +9,7 @@ import AuthPage from './pages/auth-page/AuthPage';
 import { Dimmer, Loader } from 'semantic-ui-react';
 import CreatePage from './pages/create-map-page/CreatePage';
 import UserPage from './pages/user-page/UserPage';
+import mapShowPage from './pages/map-show-page/mapShowPage';
 
 /**
  * Component for routing and routings anims
@@ -79,6 +80,7 @@ const App: React.FC<IndexProps> = function ({ location }) {
                         <ProtectedRoute path="/home" component={HomePage} />
                         <ProtectedRoute path="/create" component={CreatePage} />
                         <ProtectedRoute path="/user/:email" component={UserPage} />
+                        <ProtectedRoute path="/routes/:routeID" component={mapShowPage} />
                     </Switch>
                 </CSSTransition>
             </TransitionGroup>

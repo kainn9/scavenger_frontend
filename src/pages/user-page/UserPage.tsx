@@ -11,7 +11,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import MapUiBar from '../../components/map-ui-bar/MapBar';
 import MapUiBtn from '../../components/default-map-ui-btn/MapUiBtn';
 import LogoutButton from '../../components/logout-button/LogoutButton';
-import { SET_ACTIVE_ROUTE } from '../../redux/active-route/activeRouteActions';
+import { SET_ACTIVE_ROUTE, SET_LIKES, SET_ROUTE_ID } from '../../redux/active-route/activeRouteActions';
 
 //redux
 const msp = ({ activeRoute }: { activeRoute: ARRootState }) => ({
@@ -19,6 +19,8 @@ const msp = ({ activeRoute }: { activeRoute: ARRootState }) => ({
 });
 const mdp = (dispatch: (action: Action) => void) => ({
     SET_ACTIVE_ROUTE: (route: activeRoute | null) => dispatch(SET_ACTIVE_ROUTE(route)),
+    SET_LIKES: (likes: null) => dispatch(SET_LIKES(likes)),
+    SET_ROUTE_ID: (id: null) => dispatch(SET_ROUTE_ID(id)),
 });
 const connector = connect(msp, mdp);
 type ReduxProps = ConnectedProps<typeof connector>;
@@ -33,6 +35,8 @@ const UserPage: React.FC<RouteComponentProps<{ email: string }> & ReduxProps> = 
     match,
     activeRoute,
     SET_ACTIVE_ROUTE,
+    SET_LIKES,
+    SET_ROUTE_ID,
 }) {
     const {
         params: { email },
@@ -43,7 +47,7 @@ const UserPage: React.FC<RouteComponentProps<{ email: string }> & ReduxProps> = 
     useEffect(() => {
         const fetchUser = async () => {
             const token = await getAccessTokenSilently({ audience: `${process.env.REACT_APP_BASE_LINK}/` });
-            console.log(`${process.env.REACT_APP_BASE_LINK}/api/v1/users/email?email=${email}`);
+
             const resp = await fetch(`${process.env.REACT_APP_BASE_LINK}/api/v1/users/email/?email=${email}`, {
                 method: 'GET',
                 headers: {
@@ -58,7 +62,17 @@ const UserPage: React.FC<RouteComponentProps<{ email: string }> & ReduxProps> = 
         };
         fetchUser();
     }, []);
-    useEffect(() => SET_ACTIVE_ROUTE(null), []);
+    // cleanup
+    useEffect(() => {
+        const cleanUp = () => {
+            SET_ACTIVE_ROUTE(null);
+            SET_LIKES(null);
+            SET_ROUTE_ID(null);
+        };
+
+        return cleanUp();
+    }, []);
+
     const renderUserRoutes = () => {
         if (user) {
             if (user.routes.length === 0) return <h1>{email} has not created any routes</h1>;
@@ -88,7 +102,7 @@ const UserPage: React.FC<RouteComponentProps<{ email: string }> & ReduxProps> = 
             <h1 id="user-email-header">{`${email}'s Page`}</h1>
             <div className="prev-map-container">
                 {activeRoute && activeRoute.length ? (
-                    <PreviewMap nodes={activeRoute} creator={{ email: user!.email, creatorID: user!.id }} />
+                    <PreviewMap expandBtn nodes={activeRoute} creator={{ email: user!.email, creatorID: user!.id }} />
                 ) : (
                     <>
                         <h1>Route Preview</h1>
@@ -99,8 +113,9 @@ const UserPage: React.FC<RouteComponentProps<{ email: string }> & ReduxProps> = 
             <div className="user-routes-preview-container">{renderUserRoutes()}</div>
             <MapUiBar>
                 <LogoutButton />
-                <MapUiBtn iconName="map" text="Home" clickFN={() => history.push('/home')} />
+                <MapUiBtn iconName="user circle" text="Profile" clickFN={() => history.push(`/user/${user.email}`)} />
                 <MapUiBtn iconName="edit" text="Create" clickFN={() => history.push('/create')} />
+                <MapUiBtn iconName="map" text="Home" clickFN={() => history.push('/home')} />
             </MapUiBar>
         </div>
     );

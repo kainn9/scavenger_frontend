@@ -1,0 +1,16 @@
+.show-map-container {
+    height: 100%;
+    .prev-map-wrapper {
+        height: 100%;
+        .marker-preview {
+            height: 44vh;
+            overflow-y: scroll;
+            overflow-x: hidden;
+            .active-preview {
+                overflow: hidden;
+                height: fit-content;
+                padding: 2rem;
+            }
+        }
+    }
+}
