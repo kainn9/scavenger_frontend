@@ -227,6 +227,12 @@ body {
                         padding-left: 0;
                         width: 620px;
                         .prev-map-header-container {
+                            h1 {
+                                font-size: 1.5rem;
+                            }
+                            p {
+                                font-size: 1.25rem;
+                            }
                             .like-btn {
                                 right: 1rem;
                                 top: 0.5rem;
