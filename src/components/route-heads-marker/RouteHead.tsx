@@ -31,9 +31,17 @@ interface props extends ReduxProps {
 }
 const RouteHead: React.FC<props> = function ({ title, lat, lng, id, mapIFV, SET_MAP_IFV, SET_ACTIVE_NODE }) {
     const { getAccessTokenSilently } = useAuth0();
-    const [routeHeaderID, setRouteHeaderID] = useState<false | string>(false);
-    const [creator, setCreator] = useState<false | { email: string; creatorID: string }>(false);
-    const [routeID, setRouteID] = useState<null | string>(null);
+    // const [routeHeaderID, setRouteHeaderID] = useState<false | string>(false);
+    // const [creator, setCreator] = useState<false | { email: string; creatorID: string }>(false);
+    // const [routeID, setRouteID] = useState<null | string>(null);
+
+    const [mapData, setMapdata] = useState<{
+        creator: { email: string; creatorID: string };
+        routeHeaderID: string;
+        routeID: string;
+        likes: Array<string>;
+    } | null>(null);
+
     const previewRoute = async () => {
         const token = await getAccessTokenSilently({ audience: `${process.env.REACT_APP_BASE_LINK}/` });
         const resp = await fetch(`${process.env.REACT_APP_BASE_LINK}/api/v1/routes/${id}`, {
@@ -46,15 +54,22 @@ const RouteHead: React.FC<props> = function ({ title, lat, lng, id, mapIFV, SET_
             const data = await resp.json();
             const {
                 data: {
-                    route: { nodes, creator, id },
+                    route: { nodes, creator, id, userLikes },
                 },
             } = data;
 
             SET_ACTIVE_NODE(null);
             SET_MAP_IFV(nodes);
-            setRouteHeaderID(nodes[0].key);
-            setCreator({ email: creator.email, creatorID: creator._id });
-            setRouteID(id);
+
+            // setRouteHeaderID(nodes[0].key);
+            // setCreator({ email: creator.email, creatorID: creator._id });
+            // setRouteID(id);
+            setMapdata({
+                creator: { email: creator.email, creatorID: creator._id },
+                routeHeaderID: nodes[0].key,
+                routeID: id,
+                likes: userLikes,
+            });
         }
     };
 
@@ -75,7 +90,7 @@ const RouteHead: React.FC<props> = function ({ title, lat, lng, id, mapIFV, SET_
                 }}
                 onClick={previewRoute}
             ></Marker>
-            {mapIFV && creator && mapIFV[0].key === routeHeaderID && routeID ? (
+            {mapIFV && mapData && mapData.creator && mapIFV[0].key === mapData.routeHeaderID ? (
                 <InfoWindow
                     position={{ lat: lat, lng: lng }}
                     onCloseClick={() => {
@@ -84,7 +99,13 @@ const RouteHead: React.FC<props> = function ({ title, lat, lng, id, mapIFV, SET_
                 >
                     <div id="ifv-div-wrapper">
                         <div className="ifv-map-container">
-                            <PreviewMap expandBtn nodes={mapIFV} creator={creator} routeIDOverride={routeID} />
+                            <PreviewMap
+                                routeLikesOverride={mapData.likes}
+                                expandBtn
+                                nodes={mapIFV}
+                                creator={mapData.creator}
+                                routeIDOverride={mapData.routeID}
+                            />
                         </div>
                     </div>
                 </InfoWindow>

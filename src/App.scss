@@ -226,6 +226,28 @@ body {
                     .ifv-map-container {
                         padding-left: 0;
                         width: 620px;
+                        .prev-map-header-container {
+                            .like-btn {
+                                right: 1rem;
+                                top: 0.5rem;
+                                i {
+                                    font-size: 1.6rem;
+                                }
+                                p {
+                                    font-size: 1rem;
+                                }
+                            }
+                            .map-ui-btn {
+                                left: 1rem;
+                                top: 0.5rem;
+                                i {
+                                    font-size: 1.6rem;
+                                }
+                                p {
+                                    font-size: 1rem;
+                                }
+                            }
+                        }
                     }
                 }
             }
