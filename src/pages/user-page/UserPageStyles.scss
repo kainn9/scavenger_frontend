@@ -8,6 +8,10 @@
     @include yellowBlueGradi();
     #user-email-header {
         color: #141e30;
+        @include yellow-border-and-font();
+        width: 100%;
+        text-align: center;
+        @include royalGradi;
     }
     .prev-map-container {
         display: flex;
