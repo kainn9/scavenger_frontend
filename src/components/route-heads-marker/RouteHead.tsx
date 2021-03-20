@@ -33,6 +33,7 @@ const RouteHead: React.FC<props> = function ({ title, lat, lng, id, mapIFV, SET_
     const { getAccessTokenSilently } = useAuth0();
     const [routeHeaderID, setRouteHeaderID] = useState<false | string>(false);
     const [creator, setCreator] = useState<false | { email: string; creatorID: string }>(false);
+    const [routeID, setRouteID] = useState<null | string>(null);
     const previewRoute = async () => {
         const token = await getAccessTokenSilently({ audience: `${process.env.REACT_APP_BASE_LINK}/` });
         const resp = await fetch(`${process.env.REACT_APP_BASE_LINK}/api/v1/routes/${id}`, {
@@ -45,7 +46,7 @@ const RouteHead: React.FC<props> = function ({ title, lat, lng, id, mapIFV, SET_
             const data = await resp.json();
             const {
                 data: {
-                    route: { nodes, creator },
+                    route: { nodes, creator, id },
                 },
             } = data;
 
@@ -53,6 +54,7 @@ const RouteHead: React.FC<props> = function ({ title, lat, lng, id, mapIFV, SET_
             SET_MAP_IFV(nodes);
             setRouteHeaderID(nodes[0].key);
             setCreator({ email: creator.email, creatorID: creator._id });
+            setRouteID(id);
         }
     };
 
@@ -73,7 +75,7 @@ const RouteHead: React.FC<props> = function ({ title, lat, lng, id, mapIFV, SET_
                 }}
                 onClick={previewRoute}
             ></Marker>
-            {mapIFV && creator && mapIFV[0].key === routeHeaderID ? (
+            {mapIFV && creator && mapIFV[0].key === routeHeaderID && routeID ? (
                 <InfoWindow
                     position={{ lat: lat, lng: lng }}
                     onCloseClick={() => {
@@ -82,7 +84,7 @@ const RouteHead: React.FC<props> = function ({ title, lat, lng, id, mapIFV, SET_
                 >
                     <div id="ifv-div-wrapper">
                         <div className="ifv-map-container">
-                            <PreviewMap expandBtn nodes={mapIFV} creator={creator} />
+                            <PreviewMap expandBtn nodes={mapIFV} creator={creator} routeIDOverride={routeID} />
                         </div>
                     </div>
                 </InfoWindow>
