@@ -2,13 +2,21 @@
     height: 100%;
     .prev-map-wrapper {
         height: 100%;
+        .prev-map-header-container {
+            .like-btn {
+                top: 0.25rem;
+                i {
+                    font-size: 1.2rem;
+                }
+            }
+        }
         .marker-preview {
             height: 44vh;
-            overflow-y: scroll;
-            overflow-x: hidden;
+            // overflow-y: scroll;
+            // overflow-x: hidden;
             .active-preview {
-                overflow: hidden;
                 height: fit-content;
+                max-height: 44vh;
                 padding: 2rem;
             }
         }
