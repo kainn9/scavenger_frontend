@@ -132,7 +132,7 @@ const PreviewMap: React.FC<props> = function ({
             <div className="marker-preview">
                 {activeNode ? (
                     <div className="active-preview">
-                        <h1>{activeNode.title}</h1>
+                        <h1 id="prev-map-header">{activeNode.title}</h1>
                         {activeNode.text ? <p>{activeNode.text}</p> : null}
                         {activeNode.img ? <img className="marker-prev-img" src={`${activeNode.img}`} /> : null}
                         {activeNode.soundMedia ? <SpotPlayerLoader uri={activeNode.soundMedia} /> : null}

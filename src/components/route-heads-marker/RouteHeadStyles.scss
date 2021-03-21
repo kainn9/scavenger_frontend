@@ -14,6 +14,21 @@
                 height: 60vh;
                 width: 100%;
 
+                .active-preview {
+                    height: fit-content;
+                    .prev-map-wrapper {
+                        #prev-map-header {
+                            font-size: 2rem;
+                            display: inline-block;
+                            height: 4rem;
+                            width: 10rem;
+                        }
+                        p {
+                            font-size: 1rem;
+                        }
+                    }
+                }
+
                 .prev-map-header-container {
                     h1 {
                         font-size: 0.9rem;
