@@ -28,6 +28,7 @@ const mapShowPage: React.FC<RouteComponentProps<{ routeID: string }>> = function
             if (resp.ok) {
                 const data = await resp.json();
                 setMapData(data.data.route);
+                console.log(data);
             } else {
                 setRouteInvalid(true);
             }
@@ -49,7 +50,7 @@ const mapShowPage: React.FC<RouteComponentProps<{ routeID: string }>> = function
                         customHeight="40vh"
                         creator={{ email: mapData.creator.email, creatorID: mapData.creator.id }}
                         routeIDOverride={routeID}
-                        routeLikesOverride={mapData.userLikes}
+                        // routeLikesOverride={mapData.userLikes}
                     />
                 </div>
             )}

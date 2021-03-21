@@ -16,7 +16,7 @@ import MapUiBtn from '../default-map-ui-btn/MapUiBtn';
 const msp = ({ activeRoute }: { activeRoute: ARRootState }) => ({
     activeNode: activeRoute.activeNode,
     // activeRoute: activeRoute.activeRoute,
-    routeLikes: activeRoute.userLikes,
+    // routeLikes: activeRoute.userLikes,
     routeID: activeRoute.activeRouteID,
 });
 const connector = connect(msp);
@@ -28,20 +28,20 @@ interface props extends ReduxProps, RouteComponentProps {
     customHeight?: string;
     expandBtn?: boolean;
     routeIDOverride?: string;
-    routeLikesOverride?: Array<string>;
+    // routeLikesOverride?: Array<string>;
     syncCenter?: boolean;
 }
 const PreviewMap: React.FC<props> = function ({
     nodes,
     history,
     activeNode,
-    routeLikes,
+    // routeLikes,
     creator,
     customHeight,
     expandBtn,
     routeID,
     routeIDOverride,
-    routeLikesOverride,
+    // routeLikesOverride,
     syncCenter,
 }) {
     const renderNodes = function () {
@@ -74,6 +74,7 @@ const PreviewMap: React.FC<props> = function ({
     };
     const [isLiked, setIsLiked] = useState<boolean>(false);
     const isRouteLikedByUser = async () => {
+        console.log('yeyeyeyeyey');
         const token = await getAccessTokenSilently({ audience: `${process.env.REACT_APP_BASE_LINK}/` });
         return fetch(
             `${process.env.REACT_APP_BASE_LINK}/api/v1/users/checkLike?routeID=${routeIDOverride || routeID}`,
@@ -90,16 +91,15 @@ const PreviewMap: React.FC<props> = function ({
 
     useEffect(() => {
         isRouteLikedByUser();
-    }, []);
+        console.log('yeee', activeNode);
+    }, [nodes]);
     // the goods:
     return nodes[0] ? (
         <div className="prev-map-wrapper">
             <div className="prev-map-header-container">
                 <h1>{nodes[0].title}</h1>
                 <p onClick={() => history.push(`/user/${creator.email}`)}>By {`${creator.email}`}</p>
-                {(routeLikesOverride || routeLikes) &&
-                ((routeLikesOverride && routeLikesOverride.length) || (routeLikes && routeLikes.length)) &&
-                isLiked ? (
+                {isLiked ? (
                     <LikeBtn liked onClick={likeRouteClickHandler} />
                 ) : (
                     <LikeBtn liked={false} onClick={likeRouteClickHandler} />

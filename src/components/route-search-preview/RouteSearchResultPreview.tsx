@@ -4,7 +4,7 @@ import { Icon } from 'semantic-ui-react';
 import {
     SET_ACTIVE_NODE,
     SET_ACTIVE_ROUTE,
-    SET_LIKES,
+    // SET_LIKES,
     SET_ROUTE_ID,
 } from '../../redux/active-route/activeRouteActions';
 import { Action, activeRoute, backendRoute } from '../../redux/active-route/activeRouteReducer';
@@ -13,7 +13,7 @@ import './RouteSearchResultPreviewStyles.scss';
 //redux
 const mdp = (dispatch: (action: Action) => void) => ({
     SET_ACTIVE_ROUTE: (route: activeRoute | null) => dispatch(SET_ACTIVE_ROUTE(route)),
-    SET_LIKES: (likes: Array<string>) => dispatch(SET_LIKES(likes)),
+    // SET_LIKES: (likes: Array<string>) => dispatch(SET_LIKES(likes)),
     SET_ROUTE_ID: (id: string) => dispatch(SET_ROUTE_ID(id)),
     SET_ACTIVE_NODE: (n: null) => dispatch(SET_ACTIVE_NODE(n)),
 });
@@ -26,7 +26,7 @@ const RouteSearchResultPreview: React.FC<props> = function ({
     route,
     SET_ACTIVE_ROUTE,
     SET_ACTIVE_NODE,
-    SET_LIKES,
+    // SET_LIKES,
     SET_ROUTE_ID,
 }) {
     // console.log('yeh', route);
@@ -36,7 +36,7 @@ const RouteSearchResultPreview: React.FC<props> = function ({
             onClick={() => {
                 SET_ACTIVE_NODE(null);
                 SET_ACTIVE_ROUTE(route.nodes);
-                SET_LIKES(route.userLikes);
+                // SET_LIKES(route.userLikes);
                 SET_ROUTE_ID(route._id);
             }}
         >

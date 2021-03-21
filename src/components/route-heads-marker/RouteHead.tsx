@@ -39,7 +39,7 @@ const RouteHead: React.FC<props> = function ({ title, lat, lng, id, mapIFV, SET_
         creator: { email: string; creatorID: string };
         routeHeaderID: string;
         routeID: string;
-        likes: Array<string>;
+        // likes: Array<string>;
     } | null>(null);
 
     const previewRoute = async () => {
@@ -68,7 +68,7 @@ const RouteHead: React.FC<props> = function ({ title, lat, lng, id, mapIFV, SET_
                 creator: { email: creator.email, creatorID: creator._id },
                 routeHeaderID: nodes[0].key,
                 routeID: id,
-                likes: userLikes,
+                // likes: userLikes,
             });
         }
     };
@@ -100,7 +100,7 @@ const RouteHead: React.FC<props> = function ({ title, lat, lng, id, mapIFV, SET_
                     <div id="ifv-div-wrapper">
                         <div className="ifv-map-container">
                             <PreviewMap
-                                routeLikesOverride={mapData.likes}
+                                // routeLikesOverride={mapData.likes}
                                 expandBtn
                                 nodes={mapIFV}
                                 creator={mapData.creator}
