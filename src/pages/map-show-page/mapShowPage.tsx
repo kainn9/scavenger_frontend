@@ -28,7 +28,7 @@ const mapShowPage: React.FC<RouteComponentProps<{ routeID: string }>> = function
             if (resp.ok) {
                 const data = await resp.json();
                 setMapData(data.data.route);
-                console.log(data);
+                // console.log(data);
             } else {
                 setRouteInvalid(true);
             }

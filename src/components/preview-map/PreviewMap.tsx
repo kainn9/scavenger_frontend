@@ -74,7 +74,7 @@ const PreviewMap: React.FC<props> = function ({
     };
     const [isLiked, setIsLiked] = useState<boolean>(false);
     const isRouteLikedByUser = async () => {
-        console.log('yeyeyeyeyey');
+        // console.log('yeyeyeyeyey');
         const token = await getAccessTokenSilently({ audience: `${process.env.REACT_APP_BASE_LINK}/` });
         return fetch(
             `${process.env.REACT_APP_BASE_LINK}/api/v1/users/checkLike?routeID=${routeIDOverride || routeID}`,
@@ -91,7 +91,7 @@ const PreviewMap: React.FC<props> = function ({
 
     useEffect(() => {
         isRouteLikedByUser();
-        console.log('yeee', activeNode);
+        // console.log('yeee', activeNode);
     }, [nodes]);
     // the goods:
     return nodes[0] ? (
