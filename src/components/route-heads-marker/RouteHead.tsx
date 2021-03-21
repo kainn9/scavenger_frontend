@@ -54,7 +54,7 @@ const RouteHead: React.FC<props> = function ({ title, lat, lng, id, mapIFV, SET_
             const data = await resp.json();
             const {
                 data: {
-                    route: { nodes, creator, id, userLikes },
+                    route: { nodes, creator, id },
                 },
             } = data;
 
