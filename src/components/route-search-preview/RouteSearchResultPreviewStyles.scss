@@ -2,21 +2,25 @@
 .route-s-result {
     position: relative;
     cursor: pointer;
-    height: 6rem;
+    height: 3rem;
     width: 100%;
     @include yellow-border-and-font();
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 0.8rem;
-    padding-bottom: 1.5rem;
+    padding: 0.3rem;
+    h1 {
+        font-size: 1rem;
+        margin: 0;
+        margin-bottom: 0.2rem;
+    }
     p {
-        padding-top: 0.5rem;
+        font-size: 0.8rem;
     }
     i {
         position: absolute;
         right: 3rem;
         top: 1rem;
-        font-size: 2.5rem;
+        font-size: 1rem;
     }
 }

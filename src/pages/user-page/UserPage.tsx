@@ -29,6 +29,7 @@ interface user {
     email: string;
     id: string;
     routes: Array<backendRoute>;
+    likes: Array<backendRoute>;
 }
 const UserPage: React.FC<RouteComponentProps<{ email: string }> & ReduxProps> = function ({
     history,
@@ -44,6 +45,7 @@ const UserPage: React.FC<RouteComponentProps<{ email: string }> & ReduxProps> = 
     const { getAccessTokenSilently } = useAuth0();
     const [userFound, setUserFound] = useState<boolean>(true);
     const [user, setUser] = useState<user | null>(null);
+    const [showLikes, setShowLikes] = useState<boolean>(false);
     useEffect(() => {
         const fetchUser = async () => {
             const token = await getAccessTokenSilently({ audience: `${process.env.REACT_APP_BASE_LINK}/` });
@@ -81,6 +83,15 @@ const UserPage: React.FC<RouteComponentProps<{ email: string }> & ReduxProps> = 
         }
         return <h1>searching for {email} routes</h1>;
     };
+    const renderUserLikes = () => {
+        if (user) {
+            if (user.likes.length === 0)
+                return <h1 style={{ textAlign: 'center' }}>{email} has not liked any routes</h1>;
+
+            return user.likes.map((route, i) => <RouteSearchResultPreview key={i} route={route} />);
+        }
+        return <h1>searching for {email} routes</h1>;
+    };
 
     if (!userFound)
         return (
@@ -95,7 +106,7 @@ const UserPage: React.FC<RouteComponentProps<{ email: string }> & ReduxProps> = 
                 <h1>Route Preview</h1>
                 <Icon className="map" />
             </div>
-            <div className="user-routes-preview-container">{renderUserRoutes()}</div>
+            <div className="user-routes-preview-container">{showLikes ? renderUserLikes() : renderUserRoutes()}</div>
         </div>
     ) : (
         <div className="user-page">
@@ -110,7 +121,16 @@ const UserPage: React.FC<RouteComponentProps<{ email: string }> & ReduxProps> = 
                     </>
                 )}
             </div>
-            <div className="user-routes-preview-container">{renderUserRoutes()}</div>
+            <div className="user-route-show-opt">
+                <div className="user-toggle-created" onClick={() => setShowLikes(false)}>
+                    <h1 style={showLikes ? { color: 'grey' } : {}}>View Routes</h1>
+                </div>
+                <div className="user-toggle-likes" onClick={() => setShowLikes(true)}>
+                    {' '}
+                    <h1 style={!showLikes ? { color: 'grey' } : {}}>View Liked Routes</h1>
+                </div>
+            </div>
+            <div className="user-routes-preview-container">{showLikes ? renderUserLikes() : renderUserRoutes()}</div>
             <MapUiBar>
                 <LogoutButton />
                 <MapUiBtn iconName="user circle" text="Profile" clickFN={() => history.push(`/user/${user.email}`)} />

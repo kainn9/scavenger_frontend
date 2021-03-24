@@ -38,9 +38,40 @@
             }
         }
     }
+    @mixin user-options {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 75%;
+        width: 45%;
+        padding: 0.5rem;
+        border-radius: 0.3rem;
+        text-align: center;
+        cursor: pointer;
+        @include yellow-border-and-font();
+    }
+    .user-route-show-opt {
+        margin-top: 1rem;
+        height: 7vh;
+        width: 100%;
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        @include royalGradi();
+        @include yellow-border-and-font();
+        h1 {
+            font-size: 1.5rem;
+        }
+        .user-toggle-created {
+            @include user-options();
+        }
+        .user-toggle-likes {
+            @include user-options();
+        }
+    }
     .user-routes-preview-container {
         margin-top: 1rem;
-        height: 17vh;
+        height: 10vh;
         width: 100%;
         @include yellow-border-and-font();
         @include royalGradi();
