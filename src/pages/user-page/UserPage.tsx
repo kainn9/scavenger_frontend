@@ -5,21 +5,21 @@ import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import PreviewMap from '../../components/preview-map/PreviewMap';
 import { Icon } from 'semantic-ui-react';
-import { Action, activeRoute, ARRootState, backendRoute } from '../../redux/active-route/activeRouteReducer';
+import { activeRoute, ARRootState, backendRoute } from '../../redux/active-route/activeRouteReducer';
 import RouteSearchResultPreview from '../../components/route-search-preview/RouteSearchResultPreview';
 import { connect, ConnectedProps } from 'react-redux';
 import MapUiBar from '../../components/map-ui-bar/MapBar';
 import MapUiBtn from '../../components/default-map-ui-btn/MapUiBtn';
 import LogoutButton from '../../components/logout-button/LogoutButton';
-import { SET_ACTIVE_ROUTE, SET_LIKES, SET_ROUTE_ID } from '../../redux/active-route/activeRouteActions';
+import { SET_ACTIVE_ROUTE, SET_ROUTE_ID } from '../../redux/active-route/activeRouteActions';
 
 //redux
 const msp = ({ activeRoute }: { activeRoute: ARRootState }) => ({
     activeRoute: activeRoute.activeRoute,
+    likeEvent: activeRoute.likeEvent,
 });
-const mdp = (dispatch: (action: Action) => void) => ({
+const mdp = (dispatch: (action: { type: string }) => void) => ({
     SET_ACTIVE_ROUTE: (route: activeRoute | null) => dispatch(SET_ACTIVE_ROUTE(route)),
-    SET_LIKES: (likes: null) => dispatch(SET_LIKES(likes)),
     SET_ROUTE_ID: (id: null) => dispatch(SET_ROUTE_ID(id)),
 });
 const connector = connect(msp, mdp);
@@ -35,8 +35,7 @@ const UserPage: React.FC<RouteComponentProps<{ email: string }> & ReduxProps> = 
     history,
     match,
     activeRoute,
-    SET_ACTIVE_ROUTE,
-    SET_LIKES,
+    likeEvent,
     SET_ROUTE_ID,
 }) {
     const {
@@ -59,16 +58,19 @@ const UserPage: React.FC<RouteComponentProps<{ email: string }> & ReduxProps> = 
             if (!resp.ok) setUserFound(false);
             else {
                 const userData = await resp.json();
-                setUser(userData.data.user);
+
+                setUser((ps: null | user) => {
+                    // must return a new object as first arg, use a cb function otherwise state will lag 1 step behind since async
+                    return Object.assign({}, ps || userData.data.user, { likes: userData.data.user.likes });
+                });
             }
         };
         fetchUser();
-    }, []);
+    }, [likeEvent]);
     // cleanup
     useEffect(() => {
         const cleanUp = () => {
             SET_ACTIVE_ROUTE(null);
-            SET_LIKES(null);
             SET_ROUTE_ID(null);
         };
 

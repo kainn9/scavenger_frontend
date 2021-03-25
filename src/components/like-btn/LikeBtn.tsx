@@ -1,6 +1,9 @@
 import React from 'react';
+
 import { Icon } from 'semantic-ui-react';
+
 import './LikeBtnStyles.scss';
+
 interface props {
     liked: boolean;
     onClick?: () => void;

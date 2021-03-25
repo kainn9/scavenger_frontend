@@ -11,6 +11,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import DirectionsComp from '../directions/DirectionsComp';
 import LikeBtn from '../like-btn/LikeBtn';
 import MapUiBtn from '../default-map-ui-btn/MapUiBtn';
+import { TRIGGER_LIKE_EVENT } from '../../redux/active-route/activeRouteActions';
 
 //redux
 const msp = ({ activeRoute }: { activeRoute: ARRootState }) => ({
@@ -19,7 +20,10 @@ const msp = ({ activeRoute }: { activeRoute: ARRootState }) => ({
     // routeLikes: activeRoute.userLikes,
     routeID: activeRoute.activeRouteID,
 });
-const connector = connect(msp);
+const mdp = (dispatch: (action: { type: string }) => void) => ({
+    TRIGGER_LIKE_EVENT: () => dispatch(TRIGGER_LIKE_EVENT()),
+});
+const connector = connect(msp, mdp);
 type ReduxProps = ConnectedProps<typeof connector>;
 
 interface props extends ReduxProps, RouteComponentProps {
@@ -43,6 +47,7 @@ const PreviewMap: React.FC<props> = function ({
     routeIDOverride,
     // routeLikesOverride,
     syncCenter,
+    TRIGGER_LIKE_EVENT,
 }) {
     const renderNodes = function () {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -68,9 +73,10 @@ const PreviewMap: React.FC<props> = function ({
             body: JSON.stringify({ routeID: routeIDOverride || routeID }),
         });
 
-        resp.json().then(() => isRouteLikedByUser());
-        // const data = await resp.json();
-        // console.log(data);
+        resp.json().then(() => {
+            isRouteLikedByUser();
+            TRIGGER_LIKE_EVENT();
+        });
     };
     const [isLiked, setIsLiked] = useState<boolean>(false);
     const isRouteLikedByUser = async () => {

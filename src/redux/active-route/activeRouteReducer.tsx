@@ -31,7 +31,9 @@ export interface ARRootState {
     activeNode: activeNode;
     activeRoute: activeRoute;
     error?: string | null;
-    userLikes?: Array<string> | null;
+    // userLikes?: Array<string> | null;
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    likeEvent: {};
     activeRouteID: string | null;
 }
 
@@ -46,7 +48,8 @@ const INIT_STATE: ARRootState = {
     activeNode: null,
     activeRoute: [],
     error: null,
-    userLikes: [],
+    // userLikes: [],
+    likeEvent: {},
     activeRouteID: null,
 };
 
@@ -86,10 +89,10 @@ const activeRouteReducer = function (prevState = INIT_STATE, { type, payload }: 
                 ...prevState,
                 activeRoute: payload,
             };
-        case 'SET_LIKES':
+        case 'TRIGGER_LIKE_EVENT':
             return {
                 ...prevState,
-                userLikes: payload,
+                likeEvent: {},
             };
         case 'SET_ROUTE_ID':
             return {

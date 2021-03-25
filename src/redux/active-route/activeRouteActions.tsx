@@ -109,10 +109,9 @@ export const SET_ACTIVE_SOUND = function (uri: string | null): { type: string; p
         payload: uri,
     };
 };
-export const SET_LIKES = function (likes: Array<string> | null): { type: string; payload: Array<string> | null } {
+export const TRIGGER_LIKE_EVENT = function (): { type: string } {
     return {
-        type: 'SET_LIKES',
-        payload: likes,
+        type: 'TRIGGER_LIKE_EVENT',
     };
 };
 
